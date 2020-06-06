@@ -278,7 +278,7 @@ public class HttpServerConnection implements Runnable {
             redirectToFinalPath(output, theUriInterpretation.getName());
         } else {
             SimpleDateFormat format = new SimpleDateFormat(
-                    "yyyy-MM-dd=HH-mm-ss】");
+                    "yyyy-MM-dd=HH-mm-ss");
             redirectToFinalPath(output,
                     "HTTP_" + format.format(new Date()) + ".ZIP");
         }
