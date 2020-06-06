@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:translationZ="5dp"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:background="@color/dialog_background_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/qrcodeImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/dismissBtn"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/transparent"
+            android:text="关闭"
+            android:textColor="@color/dialog_text_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

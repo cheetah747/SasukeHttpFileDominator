@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/link_layout"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/dark_blue"
+    android:elevation="6dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:layout_marginBottom="6dp"
+    android:paddingRight="8dp"
+    android:paddingLeft="5dp">
+    <!--    android:layout_below="@id/toolbar"-->
+
+    <HorizontalScrollView
+        android:animateLayoutChanges="true"
+        android:fillViewport="true"
+        android:layout_width="0dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:scrollbars="none"
+        android:layout_weight="1"
+        android:elevation="6dp"
+        android:background="@drawable/white_rectangle_roval"
+        android:layout_height="34dp">
+
+        <TextView
+            android:id="@+id/link_msg"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:hint="服务未启动"
+            android:gravity="center_vertical"
+            android:textColor="@color/url_text_color"
+            android:textSize="18sp"
+            tools:text="http://127.0.0.1/" />
+    </HorizontalScrollView>
+
+    <ImageButton
+        android:id="@+id/shareBtn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="分享"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_share" />
+
+    <ImageButton
+        android:id="@+id/copyBtn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="复制"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_copy" />
+
+    <ImageButton
+        android:id="@+id/qrcodeBtn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/transparent"
+        android:contentDescription="二维码"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_qrcode" />
+
+</LinearLayout>

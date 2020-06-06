@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark_blue">#303030</color>
+    <color name="darker_blue">#252525</color>
+    <color name="light_blue">#e8eaf6</color>
+    <color name="orange">#FF9800</color>
+    <color name="lighter_orange">#ffad33</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="black">#000000</color>
+    <color name="red">#F44336</color>
+    <color name="white">#FFFFFF</color>
+    <color name="file_name_color">#2d2d2d</color>
+    <color name="url_text_color">#c7c7c7</color>
+    <color name="url_layout_background_color">#424242</color>
+    <color name="main_activity_background_color">#000000</color>
+    <color name="dialog_background_color">#939393</color>
+    <color name="dialog_text_color">#000000</color>
+</resources>
