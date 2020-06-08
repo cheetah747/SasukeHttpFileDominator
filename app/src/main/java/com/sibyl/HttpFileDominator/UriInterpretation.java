@@ -14,6 +14,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.sibyl.FuckGoogleUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -75,8 +77,10 @@ public class UriInterpretation {
     }
 
     private void getFileSize(Uri uri) {
+        String realPath = FuckGoogleUtil.getUriPath(contentResolver,uri);
         if (size <= 0) {
             String uriString = uri.toString();
+            // file://的情况======================
             if (uriString.startsWith("file://")) {
                 File f = new File(uriString.substring("file://".length()));
                 isDirectory = f.isDirectory();
@@ -94,7 +98,14 @@ public class UriInterpretation {
                 }
                 ///Log.v(Util.myLogName, "zzz" + size);
 
-            } else {
+            }
+            //安卓7以上的content://的情况======================
+            else if (uriString.startsWith("content://")){
+                File f = new File(realPath);
+                isDirectory = f.isDirectory();
+                return;
+            //其它的普通情况======================
+            }else {
                 try {
                     File f = new File(uriString);
                     isDirectory = f.isDirectory();

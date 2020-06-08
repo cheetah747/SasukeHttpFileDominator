@@ -269,16 +269,16 @@ public class HttpServerConnection implements Runnable {
     }
 
     private void shareRootUrl(DataOutputStream output) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd=HH-mm-ss");
+
         if (theUriInterpretation.isDirectory()) {
-            redirectToFinalPath(output, theUriInterpretation.getName() + ".ZIP");
+            redirectToFinalPath(output, "HTTP_" + format.format(new Date()) + ".ZIP"/*theUriInterpretation.getName() + ".ZIP"*/);
             return;
         }
 
         if (fileUriZ.size() == 1) {
             redirectToFinalPath(output, theUriInterpretation.getName());
         } else {
-            SimpleDateFormat format = new SimpleDateFormat(
-                    "yyyy-MM-dd=HH-mm-ss");
             redirectToFinalPath(output,
                     "HTTP_" + format.format(new Date()) + ".ZIP");
         }
