@@ -375,22 +375,22 @@ public class HttpServerConnection implements Runnable {
         if (location != null) {
             try {
                 //解决：下载时中文文件名乱码的问题
-                location = URLEncoder.encode(location, "UTF-8");
+                location = URLEncoder.encode(location, "UTF-8").replaceAll("\\+","%20");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
             // we don't want cache for the root URL
-            try {
-                int pos = location.indexOf("://");
-                if (pos > 0 && pos < 10) {
-                    // so russians can download their files as well :)
-                    // but if a protocol like http://, than we may as well redirect
-                    location = URLEncoder.encode(location, "UTF-8");
-                    s("after urlencode location:" + location);
-                }
-            } catch (UnsupportedEncodingException e) {
-                s(Log.getStackTraceString(e));
-            }
+//            try {
+//                int pos = location.indexOf("://");
+//                if (pos > 0 && pos < 10) {
+//                    // so russians can download their files as well :)
+//                    // but if a protocol like http://, than we may as well redirect
+//                    location = URLEncoder.encode(location, "UTF-8");
+//                    s("after urlencode location:" + location);
+//                }
+//            } catch (UnsupportedEncodingException e) {
+//                s(Log.getStackTraceString(e));
+//            }
 
             output.append("Location: ").append(location).append("\r\n"); // server name
 
