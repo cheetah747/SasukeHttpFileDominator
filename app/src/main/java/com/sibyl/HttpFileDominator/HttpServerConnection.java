@@ -356,7 +356,7 @@ public class HttpServerConnection implements Runnable {
                                          String location) {
 
         StringBuilder output = new StringBuilder();
-        output.append("HTTP/1.1 ");
+        output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
         output.append(getFileSizeHeader());
         SimpleDateFormat format = new SimpleDateFormat(
@@ -394,7 +394,7 @@ public class HttpServerConnection implements Runnable {
 
             output.append("Location: ").append(location).append("\r\n"); // server name
 
-            output.append("Connection: keep-alive\r\n");
+//            output.append("Connection: keep-alive\r\n");
             output.append("Expires: Tue, 03 Jul 2001 06:00:00 GMT\r\n");
             output.append("Cache-Control: no-store, no-cache, must-revalidate, max-age=0\r\n");
             output.append("Cache-Control: post-check=0, pre-check=0\r\n");
