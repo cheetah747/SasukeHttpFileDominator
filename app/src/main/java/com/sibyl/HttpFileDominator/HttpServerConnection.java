@@ -405,6 +405,15 @@ public class HttpServerConnection implements Runnable {
                 mime = "multipart/x-zip";
             }
             output.append("Content-Type: ").append(mime).append("\r\n");
+            if (UriInterpretation.isMimeVideoType(mime)){//如果是多媒体文件
+//                Accept-Ranges:     bytes
+//                Content-Length:    2097152
+//                Content-Range:     bytes 0-2097151/38696534
+                //解决：以下响应头设置使支持视频文件的进度条拖动，不设置的话会无法拖动进度条
+                //参考资料：https://blog.csdn.net/hudaijun/article/details/87456583
+                output.append("Accept-Ranges:  bytes\r\n");
+                output.append("Content-Range:  bytes 0-5242880/" + theUriInterpretation.getSize()).append("\r\n");
+            }
         }
         output.append("\r\n");
         return output.toString();

@@ -244,6 +244,18 @@ public class UriInterpretation {
         }
     }
 
+    /**判断该文件类型是否是视频*/
+    public static boolean isMimeVideoType(String mime){
+        return mime.equals("video/mp4")
+                || mime.equals("video/avi")
+                || mime.equals("audio/x-mpeg-3")
+                || mime.equals("audio/x-wav")
+                || mime.equals("video/mov")
+                || mime.equals("video/x-flv")
+                || mime.equals("video/x-f4v")
+                || mime.equals("video/webm");
+    }
+
     public long getSize() {
         return size;
     }
