@@ -1,4 +1,4 @@
-package com.sibyl;
+package com.sibyl.HttpFileDominator;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -6,10 +6,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 /**
- * @author Sasuke on 2020/6/7.
+ * @author Sasuke on 2020/6/8.
  */
 
-public class FuckGoogleUtil {
+class FuckGoogleUtil {
     public static String getUriPath(ContentResolver contentResolver, Uri uri) {
         if (uri.getPath().startsWith("file://")){
             return null;
