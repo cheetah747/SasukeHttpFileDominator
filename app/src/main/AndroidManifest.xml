@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<!--    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+<!--    申请让用户为应用开启非省电模式-->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!--    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
 
     <uses-feature
         android:name="android.hardware.touchscreen"

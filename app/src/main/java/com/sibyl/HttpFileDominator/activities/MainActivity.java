@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
+import com.sibyl.HttpFileDominator.BatteryOptiDominator;
 import com.sibyl.HttpFileDominator.BuildConfig;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
@@ -298,6 +299,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
+
     /**6.0的权限*/
     private void grantPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -330,7 +332,9 @@ public class MainActivity extends BaseActivity {
                     ).request(new OnPermission() {
                 @Override
                 public void hasPermission(List<String> granted, boolean isAll) {
-
+                    if (isAll){
+                        BatteryOptiDominator.requestIgnoreBatteryOpti(MainActivity.this);
+                    }
                 }
 
                 @Override
