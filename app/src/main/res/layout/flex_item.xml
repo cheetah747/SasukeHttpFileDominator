@@ -15,14 +15,24 @@
 
     <LinearLayout
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/isFolderIcon"
+            android:layout_marginLeft="8dp"
+            android:scaleType="fitCenter"
+            android:tint="@color/white"
+            android:src="@drawable/icon_folder"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
 
         <TextView
             android:id="@+id/itemNameTv"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:paddingLeft="12dp"
+            android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textColor="@color/white"
             tools:text="这是一个文件名.mp4"

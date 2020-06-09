@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -151,6 +152,7 @@ public class MainActivity extends BaseActivity {
             final View view = LayoutInflater.from(this).inflate(R.layout.flex_item, flexboxLayout, false);
             view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
             ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
+            ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory()? View.VISIBLE : View.GONE);
             ((ImageButton) view.findViewById(R.id.itemDeleteBtn)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
