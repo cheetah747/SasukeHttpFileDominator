@@ -412,7 +412,7 @@ public class HttpServerConnection implements Runnable {
                 //解决：以下响应头设置使支持视频文件的进度条拖动，不设置的话会无法拖动进度条
                 //参考资料：https://blog.csdn.net/hudaijun/article/details/87456583
                 output.append("Accept-Ranges:  bytes\r\n");
-                output.append("Content-Range:  bytes 0-5242880/" + theUriInterpretation.getSize()).append("\r\n");
+                output.append("Content-Range:  bytes 0-10485760/" + theUriInterpretation.getSize()).append("\r\n");
             }
         }
         output.append("\r\n");
