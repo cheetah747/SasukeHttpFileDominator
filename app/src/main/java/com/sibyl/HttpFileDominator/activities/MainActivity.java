@@ -1,8 +1,10 @@
 package com.sibyl.HttpFileDominator.activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,7 +15,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.material.snackbar.Snackbar;
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.XXPermissions;
 import com.sibyl.HttpFileDominator.BuildConfig;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
@@ -21,6 +27,7 @@ import com.sibyl.HttpFileDominator.UriInterpretation;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -31,8 +38,9 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.main_activity_background_color, null));
-
         setupToolbar();
+        grantPermissions();//操你妈6.0权限
+
         setupTextViews();
         setupNavigationViews();
         createViewClickListener();
@@ -285,5 +293,71 @@ public class MainActivity extends BaseActivity {
             }
         }
         return theUris;
+    }
+
+
+    /**6.0的权限*/
+    private void grantPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            XXPermissions.with(this)
+                    .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
+                    //.permission(Permission.SYSTEM_ALERT_WINDOW, Permission.REQUEST_INSTALL_PACKAGES) //支持请求6.0悬浮窗权限8.0请求安装权限
+                    //                    .permission(Permission.Group.STORAGE, Permission.Group.CALENDAR) //不指定权限则自动获取清单中的危险权限
+                    .permission(//存储
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+//                    //电话
+//                    Manifest.permission.CALL_PHONE,
+//                            Manifest.permission.READ_PHONE_STATE
+//                    //短信
+//                    Manifest.permission.SEND_SMS,
+//                    //通讯录
+//                    Manifest.permission.READ_PHONE_NUMBERS,
+//                    Manifest.permission.GET_ACCOUNTS
+//                            Manifest.permission.READ_CONTACTS
+//                    //定位
+//                    Manifest.permission.ACCESS_COARSE_LOCATION,
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    //相机
+//                    Manifest.permission.CAMERA
+
+//                                Manifest.permission.CHANGE_NETWORK_STATE,
+//                                Manifest.permission.WRITE_SETTINGS
+                            //安装APK
+                            /*Manifest.permission.REQUEST_INSTALL_PACKAGES*/
+                    ).request(new OnPermission() {
+                @Override
+                public void hasPermission(List<String> granted, boolean isAll) {
+
+                }
+
+                @Override
+                public void noPermission(List<String> denied, boolean quick) {
+                    if (quick) {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setMessage("请允许权限")
+                                .setPositiveButton("好的", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        XXPermissions.gotoPermissionSettings(MainActivity.this);
+                                    }
+                                })
+                                .show();
+                    }
+                }
+            });
+//                    .request(object :OnPermission {
+//                override fun hasPermission(granted:List<String>, isAll: Boolean) {}
+//
+//                override fun noPermission(denied: List<String>, quick: Boolean) {
+//                    if (quick) {
+//                        android.app.AlertDialog.Builder(this@MainActivity)
+//                                .setMessage(resources.getString(R.string.permission_allow))
+//                                .setPositiveButton(resources.getString(R.string.go_now)) { dialog, which -> XXPermissions.gotoPermissionSettings(this@MainActivity) }
+//                                .show()
+//                    }
+//                }
+//            })
+        }
     }
 }

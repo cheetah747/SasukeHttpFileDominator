@@ -41,6 +41,10 @@ dependencies {
 //    api 'com.github.bumptech.glide:glide:3.7.0'
 //    implementation 'com.google.code.gson:gson:2.8.6'
 
+    //安卓6.0动态权限适配
+    api 'com.hjq:xxpermissions:5.5'
+
+
 
 
 //    api 'androidx.cardview:cardview:1.0.0-beta01'
