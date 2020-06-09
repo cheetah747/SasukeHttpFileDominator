@@ -2,6 +2,7 @@ package com.sibyl.HttpFileDominator;
 
 import android.content.ContentResolver;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -27,6 +28,8 @@ public class FileZipper implements Runnable {
     private Boolean atLeastOneDirectory = false;
     private ContentResolver contentResolver;
     private HashSet<String> fileNamesAlreadyUsed = new HashSet<String>();
+    private String trashPath = "";//垃圾前缀地址，（其实压缩的时候不需要这么深的目录，把前面的目录给去掉
+
 
     public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations, ContentResolver contentResolver) {
         /*
@@ -86,7 +89,12 @@ public class FileZipper implements Runnable {
         if (directoryPath.charAt(directoryPath.length() - 1) != File.separatorChar) {
             directoryPath += File.separatorChar;
         }
-		ZipEntry entry = new ZipEntry(directoryPath.substring(1));
+        //割出多余的上级目录。。。（/storage/mulated/0）
+        if (TextUtils.isEmpty(trashPath)){
+            trashPath = splitOutTrashPath(directoryPath);
+        }
+
+		ZipEntry entry = new ZipEntry(directoryPath.replace(trashPath,""));
         out.putNextEntry(entry);
 
         s("Adding Directory: " + directoryPath);
@@ -143,10 +151,20 @@ public class FileZipper implements Runnable {
          *
          *  since such name has no directory info, that would break real directories
          */
-        if (atLeastOneDirectory) {
-            return uriFile.getUri().getPath().substring(1);
+        if (atLeastOneDirectory && !TextUtils.isEmpty(trashPath)) {
+//            return uriFile.getUri().getPath().substring(1);
+            return uriFile.getUri().getPath().replace(trashPath,"");//干掉前面的多余路径名
         }
         return uriFile.getName();
     }
 
+    /***
+     * 割出冗余的路径字符串
+     */
+    private String splitOutTrashPath(String dirPath) {
+        if (dirPath.endsWith("/")) {
+            dirPath = dirPath.substring(0, dirPath.length() - 1);
+        }
+        return dirPath.substring(0, dirPath.lastIndexOf("/") + 1);//因为后面要传到ZipEntry里的路径前面不需要带“/”，所以+1把后面的斜杠也干掉
+    }
 }
