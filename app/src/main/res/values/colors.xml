@@ -15,4 +15,5 @@
     <color name="main_activity_background_color">#e8eaf6</color>
     <color name="dialog_background_color">#FFFFFF</color>
     <color name="dialog_text_color">#000000</color>
+    <color name="progressbar_color">#009688</color>
 </resources>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wgmf_bg">
+    android:background="@color/main_activity_background_color">
 
     <TextView
         android:id="@+id/message"
@@ -12,5 +12,5 @@
         android:gravity="center"
         android:text="view_load_error"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_12_size" />
+        android:textSize="12sp" />
 </RelativeLayout>

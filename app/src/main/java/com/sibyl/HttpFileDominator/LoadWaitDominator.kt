@@ -3,6 +3,8 @@
 package com.sibyl.HttpFileDominator
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +67,7 @@ class LoadWaitDominator(val context: Context, private val container: ViewGroup?)
     /**
      * 设置背景色
      */
-    fun setBackgroundColor(color: Int){
+    fun setBackgroundColor(color: Int) {
         viewArray.forEach {
             it.setBackgroundColor(color)
         }
@@ -76,28 +78,34 @@ class LoadWaitDominator(val context: Context, private val container: ViewGroup?)
      * state: 传LoadViewDominator里面的那几个int静态常量标记！！！不要瞎鸡巴传。
      */
     fun show(state: Int) {
-        viewArray.forEach { it.visibility = if (state != DISMISS && state == it.tag as Int) View.VISIBLE else View.GONE }
+        Handler(Looper.getMainLooper()).post {
+            viewArray.forEach { it.visibility = if (state != DISMISS && state == it.tag as Int) View.VISIBLE else View.GONE }
+        }
     }
 
     /**
      * 显示自定义文字
      */
     fun show(showText: String) {
-        show(DIY)
-        diyView.findViewById<TextView>(R.id.message).text = showText
+        Handler(Looper.getMainLooper()).post {
+            show(DIY)
+            diyView.findViewById<TextView>(R.id.message).text = showText
+        }
     }
 
     /**
      * 隐藏所有View
      */
     fun dismissAll() {
-        viewArray.forEach { it.visibility = View.GONE }
+        Handler(Looper.getMainLooper()).post {
+            viewArray.forEach { it.visibility = View.GONE }
+        }
     }
 
     /**
      * 通过 loadingView 的显隐，来判断是否在加载
      */
-    fun isLoading(): Boolean{
+    fun isLoading(): Boolean {
         return loadingView.visibility == View.VISIBLE
     }
 }

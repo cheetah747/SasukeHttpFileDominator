@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wgmf_bg">
+    android:background="@color/main_activity_background_color">
 
     <ProgressBar
         android:id="@+id/loading"
         style="@android:style/Widget.Material.Light.ProgressBar.Large.Inverse"
         android:layout_width="match_parent"
+        android:indeterminateTint="@color/progressbar_color"
+        android:indeterminateTintMode="src_atop"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"

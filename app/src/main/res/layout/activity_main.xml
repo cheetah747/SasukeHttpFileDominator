@@ -35,29 +35,35 @@
         <!--        android:src="@drawable/ic_pick_files"-->
         <!--            android:background="@drawable/rounded_button"-->
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrolling_information"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/containerLayout"
             android:layout_marginTop="-6dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/fileNameContainer"
-                android:animateLayoutChanges="true"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrolling_information"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:flexWrap="wrap"
-                app:alignItems="flex_start"
-                app:alignContent="flex_start" />
+                android:layout_height="match_parent">
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/uriPath"-->
-            <!--                android:layout_marginLeft="8dp"-->
-            <!--                android:layout_marginRight="8dp"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:autoLink="none" />-->
-        </androidx.core.widget.NestedScrollView>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/fileNameContainer"
+                    android:animateLayoutChanges="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:flexWrap="wrap"
+                    app:alignItems="flex_start"
+                    app:alignContent="flex_start" />
+
+                <!--            <TextView-->
+                <!--                android:id="@+id/uriPath"-->
+                <!--                android:layout_marginLeft="8dp"-->
+                <!--                android:layout_marginRight="8dp"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:autoLink="none" />-->
+            </androidx.core.widget.NestedScrollView>
+        </RelativeLayout>
         <!--        </RelativeLayout>-->
 
     </LinearLayout>

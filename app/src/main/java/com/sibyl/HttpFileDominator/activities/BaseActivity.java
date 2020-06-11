@@ -24,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sibyl.HttpFileDominator.BuildConfig;
 import com.sibyl.HttpFileDominator.DensityUtil;
 import com.sibyl.HttpFileDominator.DisplayRawFileFragment;
+import com.sibyl.HttpFileDominator.LoadWaitDominator;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
 import com.sibyl.HttpFileDominator.UriInterpretation;
@@ -60,6 +62,7 @@ public class BaseActivity extends AppCompatActivity {
     protected ImageButton copyBtn;
 
     protected FlexboxLayout flexboxLayout;
+    protected LoadWaitDominator loadWait;
     // NavigationViews
 //    protected View bttnQrCode;
 ////    protected View stopServer;
@@ -112,6 +115,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupTextViews() {
+        loadWait = new LoadWaitDominator(this, (RelativeLayout) findViewById(R.id.containerLayout));
         link_msg = (TextView) findViewById(R.id.link_msg);
         fileNameContainer = (FlexboxLayout) findViewById(R.id.fileNameContainer);
 //        uriPath = (TextView) findViewById(R.id.uriPath);
@@ -296,8 +300,14 @@ public class BaseActivity extends AppCompatActivity {
 
     //下划线
     protected void showIPText() {
+        if (isFinishing()) return;
 //        link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        link_msg.setText(preferredServerUrl);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                link_msg.setText(preferredServerUrl);
+            }
+        });
     }
 
     @Override

@@ -23,8 +23,10 @@ import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 import com.sibyl.HttpFileDominator.BatteryOptiDominator;
 import com.sibyl.HttpFileDominator.BuildConfig;
+import com.sibyl.HttpFileDominator.LoadWaitDominator;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
+import com.sibyl.HttpFileDominator.ThreadManager;
 import com.sibyl.HttpFileDominator.UriInterpretation;
 
 import java.util.ArrayList;
@@ -41,29 +43,48 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.main_activity_background_color, null));
         setupToolbar();
+        setupTextViews();
+
         grantPermissions();//操你妈6.0权限
 
-        setupTextViews();
         setupNavigationViews();
         createViewClickListener();
         setupPickItemView();
         // debugSendFileActivity();
 
 
-        ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(getIntent());
-        if (sharedUriList != null) {
-            dealWithNewUris(sharedUriList);
-        }
+        ThreadManager.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (getIntent().getExtras() != null){
+                    loadWait.show(LoadWaitDominator.LOADING);
+                }
+                //注：以下是耗时操作
+                ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(getIntent());
+                if (sharedUriList != null) {
+                    dealWithNewUris(sharedUriList);
+                }
+            }
+        });
     }
 
     @Override
-    protected void onNewIntent(Intent newIntent) {
+    protected void onNewIntent(final Intent newIntent) {
         super.onNewIntent(newIntent);
         //获取从外面直接分享进来的文件
-        ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(newIntent);
-        if (sharedUriList != null) {
-            dealWithNewUris(sharedUriList);
-        }
+        ThreadManager.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (newIntent.getExtras() != null){
+                    loadWait.show(LoadWaitDominator.LOADING);
+                }
+                //注：以下是耗时操作
+                ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(newIntent);
+                if (sharedUriList != null) {
+                    dealWithNewUris(sharedUriList);
+                }
+            }
+        });
     }
 
     private void debugSendFileActivity() {
@@ -114,14 +135,26 @@ public class MainActivity extends BaseActivity {
 //    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            dealWithNewUris(getFileUris(data));
+            ThreadManager.getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (data != null){
+                        loadWait.show(LoadWaitDominator.LOADING);
+                    }
+                    ArrayList<UriInterpretation> fileUris = getFileUris(data);
+                    if (fileUris != null && !fileUris.isEmpty()){
+                        dealWithNewUris(fileUris);
+                    }
+                }
+            });
         }
     }
 
     private void dealWithNewUris(ArrayList<UriInterpretation> uriList) {
+        if (isFinishing()) return;
         //先过滤一波已经添加过的
         Iterator<UriInterpretation> it = uriList.iterator();
         while (it.hasNext()) {
@@ -133,45 +166,49 @@ public class MainActivity extends BaseActivity {
         //如果没有建立起http服务时==========
         if (httpServer == null) {
             initHttpServer(uriList);
-            addNewFlex2UI(uriList);//显示文件名到textView
-//            saveServerUrlToClipboard();
             showIPText();
-//            setViewsVisible();
-            return;
+        }else{//如果已经建立起http服务了，那只需要添加文件并显示即可
+            MyHttpServer.GetFiles().addAll(uriList);
         }
-        //如果已经建立起http服务了，那只需要添加文件并显示即可
-        MyHttpServer.GetFiles().addAll(uriList);
-        addNewFlex2UI(uriList);//显示出来
+        //显示到UI
+        addNewFlex2UI(uriList, loadWait);
     }
 
 
     /**
      * 文件Flex布局UI展示
      */
-    protected void addNewFlex2UI(ArrayList<UriInterpretation> newUriList) {
-        for (UriInterpretation uriInterpretation : newUriList) {
-            final View view = LayoutInflater.from(this).inflate(R.layout.flex_item, flexboxLayout, false);
-            view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
-            ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
-            ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory()? View.VISIBLE : View.GONE);
-            ((ImageButton) view.findViewById(R.id.itemDeleteBtn)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int deleteIndex = MyHttpServer.GetFiles().indexOf((UriInterpretation) view.getTag());
-                    if (deleteIndex != -1) {
-                        flexboxLayout.removeViewAt(deleteIndex);
-                        MyHttpServer.GetFiles().remove(deleteIndex);
-                        //如果删光了
-                        if (MyHttpServer.GetFiles().isEmpty()) {
-                            link_msg.setText("");
-                            stopServer();
-                            Snackbar.make(fab, getString(R.string.files_clear_stop_server), Snackbar.LENGTH_LONG).show();
+    protected void addNewFlex2UI(final ArrayList<UriInterpretation> newUriList, final LoadWaitDominator loadWait) {
+        if (isFinishing()) return;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (UriInterpretation uriInterpretation : newUriList) {
+                    final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
+                    ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
+                    ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory()? View.VISIBLE : View.GONE);
+                    ((ImageButton) view.findViewById(R.id.itemDeleteBtn)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int deleteIndex = MyHttpServer.GetFiles().indexOf((UriInterpretation) view.getTag());
+                            if (deleteIndex != -1) {
+                                flexboxLayout.removeViewAt(deleteIndex);
+                                MyHttpServer.GetFiles().remove(deleteIndex);
+                                //如果删光了
+                                if (MyHttpServer.GetFiles().isEmpty()) {
+                                    link_msg.setText("");
+                                    stopServer();
+                                    Snackbar.make(fab, getString(R.string.files_clear_stop_server), Snackbar.LENGTH_LONG).show();
+                                }
+                            }
                         }
-                    }
+                    });
+                    flexboxLayout.addView(view);
                 }
-            });
-            flexboxLayout.addView(view);
-        }
+                loadWait.dismissAll();
+            }
+        });
     }
 
     @Override
@@ -251,6 +288,7 @@ public class MainActivity extends BaseActivity {
      * 原SendFileActivity已废弃
      */
     private ArrayList<UriInterpretation> getIntentFileUris(Intent dataIntent) {
+        if (isFinishing()) return null;
 //        Intent dataIntent = getIntent();
         ArrayList<UriInterpretation> theUris = new ArrayList<>();
 
