@@ -39,8 +39,7 @@
             android:id="@+id/scrolling_information"
             android:layout_width="match_parent"
             android:layout_marginTop="-6dp"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="false">
+            android:layout_height="match_parent">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/fileNameContainer"
