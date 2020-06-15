@@ -21,13 +21,13 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
-import com.sibyl.HttpFileDominator.BatteryOptiDominator;
-import com.sibyl.HttpFileDominator.BuildConfig;
 import com.sibyl.HttpFileDominator.LoadWaitDominator;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
-import com.sibyl.HttpFileDominator.ThreadManager;
 import com.sibyl.HttpFileDominator.UriInterpretation;
+import com.sibyl.HttpFileDominator.utils.BatteryOptiDominator;
+import com.sibyl.HttpFileDominator.utils.NotiDominator;
+import com.sibyl.HttpFileDominator.utils.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,9 +37,15 @@ public class MainActivity extends BaseActivity {
 
     public static final int REQUEST_CODE = 1024;
 
+    private NotiDominator notiDominator;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra("isStopServer", false)) {
+            stopServer();
+            finish();
+        }
         setContentView(R.layout.activity_main);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.main_activity_background_color, null));
         setupToolbar();
@@ -56,7 +62,7 @@ public class MainActivity extends BaseActivity {
         ThreadManager.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                if (getIntent().getExtras() != null){
+                if (getIntent().getExtras() != null) {
                     loadWait.show(LoadWaitDominator.LOADING);
                 }
                 //注：以下是耗时操作
@@ -71,11 +77,16 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onNewIntent(final Intent newIntent) {
         super.onNewIntent(newIntent);
+        if (newIntent.getBooleanExtra("isStopServer",false)) {
+            newIntent.putExtra("isStopServer",false);
+            stopServer();
+            finish();
+        }
         //获取从外面直接分享进来的文件
         ThreadManager.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                if (newIntent.getExtras() != null){
+                if (newIntent.getExtras() != null) {
                     loadWait.show(LoadWaitDominator.LOADING);
                 }
                 //注：以下是耗时操作
@@ -87,18 +98,18 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void debugSendFileActivity() {
-        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
-            String path = "/mnt/sdcard/m.txt";
-
-            Intent intent = new Intent(this, SendFileActivity.class);
-            intent.addCategory("android.intent.category.DEFAULT");
-            intent.putExtra(Intent.EXTRA_TEXT, path);
-            // intent.setType("inode/directory");
-
-            startActivity(intent);
-        }
-    }
+//    private void debugSendFileActivity() {
+//        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
+//            String path = "/mnt/sdcard/m.txt";
+//
+//            Intent intent = new Intent(this, SendFileActivity.class);
+//            intent.addCategory("android.intent.category.DEFAULT");
+//            intent.putExtra(Intent.EXTRA_TEXT, path);
+//            // intent.setType("inode/directory");
+//
+//            startActivity(intent);
+//        }
+//    }
 
     private void setupPickItemView() {
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
@@ -135,17 +146,17 @@ public class MainActivity extends BaseActivity {
 //    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,final Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ThreadManager.getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    if (data != null){
+                    if (data != null) {
                         loadWait.show(LoadWaitDominator.LOADING);
                     }
                     ArrayList<UriInterpretation> fileUris = getFileUris(data);
-                    if (fileUris != null && !fileUris.isEmpty()){
+                    if (fileUris != null && !fileUris.isEmpty()) {
                         dealWithNewUris(fileUris);
                     }
                 }
@@ -167,7 +178,7 @@ public class MainActivity extends BaseActivity {
         if (httpServer == null) {
             initHttpServer(uriList);
             showIPText();
-        }else{//如果已经建立起http服务了，那只需要添加文件并显示即可
+        } else {//如果已经建立起http服务了，那只需要添加文件并显示即可
             MyHttpServer.GetFiles().addAll(uriList);
         }
         //显示到UI
@@ -187,7 +198,7 @@ public class MainActivity extends BaseActivity {
                     final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
                     view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
                     ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
-                    ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory()? View.VISIBLE : View.GONE);
+                    ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory() ? View.VISIBLE : View.GONE);
                     ((ImageButton) view.findViewById(R.id.itemDeleteBtn)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -265,6 +276,9 @@ public class MainActivity extends BaseActivity {
      * 退出应用后就停止服务
      */
     private void stopServer() {
+        if (notiDominator != null){
+            notiDominator.dismissAll(this);
+        }
         MyHttpServer p = httpServer;
         httpServer = null;
         if (p != null) {
@@ -337,8 +351,9 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
-    /**6.0的权限*/
+    /**
+     * 6.0的权限
+     */
     private void grantPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             XXPermissions.with(this)
@@ -370,7 +385,7 @@ public class MainActivity extends BaseActivity {
                     ).request(new OnPermission() {
                 @Override
                 public void hasPermission(List<String> granted, boolean isAll) {
-                    if (isAll){
+                    if (isAll) {
                         BatteryOptiDominator.requestIgnoreBatteryOpti(MainActivity.this);
                     }
                 }
@@ -404,4 +419,27 @@ public class MainActivity extends BaseActivity {
 //            })
         }
     }
+
+
+    protected void initHttpServer(ArrayList<UriInterpretation> myUris) {
+        if (myUris == null || myUris.size() == 0) {
+//            finish();//你傻啊，自己把页面关掉干嘛？？？？有病 ？？？？操你妈
+            return;
+        }
+
+        if (notiDominator == null){
+            notiDominator = new NotiDominator(this);
+        }
+        notiDominator.showNotifi();
+        httpServer = new MyHttpServer(1120);
+        listOfServerUris = httpServer.listOfIpAddresses();
+        preferredServerUrl = listOfServerUris[0].toString();
+
+        httpServer.setBaseActivity(this);
+//        httpServer.setFiles(myUris);
+        MyHttpServer.GetFiles().addAll(myUris);
+
+    }
+
+
 }

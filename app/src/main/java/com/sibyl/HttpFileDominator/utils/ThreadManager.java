@@ -1,4 +1,4 @@
-package com.sibyl.HttpFileDominator;
+package com.sibyl.HttpFileDominator.utils;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;

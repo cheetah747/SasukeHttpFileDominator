@@ -29,6 +29,7 @@ package com.sibyl.HttpFileDominator;
 import android.util.Log;
 
 import com.sibyl.HttpFileDominator.activities.BaseActivity;
+import com.sibyl.HttpFileDominator.utils.Util;
 
 import java.io.IOException;
 import java.net.Inet6Address;

@@ -1,9 +1,11 @@
-package com.sibyl.HttpFileDominator;
+package com.sibyl.HttpFileDominator.utils;
 
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.sibyl.HttpFileDominator.UriInterpretation;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

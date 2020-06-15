@@ -34,13 +34,13 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.sibyl.HttpFileDominator.BuildConfig;
-import com.sibyl.HttpFileDominator.DensityUtil;
-import com.sibyl.HttpFileDominator.DisplayRawFileFragment;
+import com.sibyl.HttpFileDominator.utils.DensityUtil;
+import com.sibyl.HttpFileDominator.views.DisplayRawFileFragment;
 import com.sibyl.HttpFileDominator.LoadWaitDominator;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
 import com.sibyl.HttpFileDominator.UriInterpretation;
-import com.sibyl.HttpFileDominator.ZxingCodeTool;
+import com.sibyl.HttpFileDominator.utils.ZxingCodeTool;
 
 import java.util.ArrayList;
 
@@ -272,22 +272,6 @@ public class BaseActivity extends AppCompatActivity {
 //            output.append(thisUriInterpretation.getPath());
 //        }
 //        uriPath.setText(output.toString());
-    }
-
-    protected void initHttpServer(ArrayList<UriInterpretation> myUris) {
-        if (myUris == null || myUris.size() == 0) {
-//            finish();//你傻啊，自己把页面关掉干嘛？？？？有病 ？？？？操你妈
-            return;
-        }
-
-        httpServer = new MyHttpServer(1120);
-        listOfServerUris = httpServer.listOfIpAddresses();
-        preferredServerUrl = listOfServerUris[0].toString();
-
-        httpServer.setBaseActivity(this);
-//        httpServer.setFiles(myUris);
-        MyHttpServer.GetFiles().addAll(myUris);
-
     }
 
     protected void saveServerUrlToClipboard() {

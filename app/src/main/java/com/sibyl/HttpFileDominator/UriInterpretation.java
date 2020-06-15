@@ -14,6 +14,9 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.sibyl.HttpFileDominator.utils.FuckGoogleUtil;
+import com.sibyl.HttpFileDominator.utils.Util;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

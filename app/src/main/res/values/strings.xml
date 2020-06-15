@@ -10,6 +10,7 @@
     <string name="rate_app">評価</string>
     <string name="share_url">URLをシェア</string>
     <string name="stop_server">サービス中止</string>
+    <string name="server_is_on">サービス作動中</string>
     <string name="technical_info">技术局限：在 WiFi 网络下一般能正常使用，但在其他网络条件下，情况和防火墙，NAT等有关。一个没有被屏蔽的 IPv6 地址情况应该一直可用。</string>
     <string name="url_clipboard">URLはコピーしました</string>
     <string name="pls_add_first">先にファイルを追加してください、サービスを自動的に起動します</string>
@@ -17,5 +18,6 @@
     <string name="disconnected_ip">クライアント%sダウンロード完了</string>
     <string name="connected_ip">クライアント%sダウンロードスタート</string>
     <string name="files_clear_stop_server">ファイルをクリアしました、サービス中止</string>
+    <string name="stop">閉じる</string>
 
 </resources>

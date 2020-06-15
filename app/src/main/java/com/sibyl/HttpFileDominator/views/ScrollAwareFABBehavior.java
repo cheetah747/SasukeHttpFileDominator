@@ -1,4 +1,4 @@
-package com.sibyl.HttpFileDominator;
+package com.sibyl.HttpFileDominator.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

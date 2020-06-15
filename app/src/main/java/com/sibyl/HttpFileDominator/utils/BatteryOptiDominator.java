@@ -1,4 +1,4 @@
-package com.sibyl.HttpFileDominator;
+package com.sibyl.HttpFileDominator.utils;
 
 import android.content.Context;
 import android.content.Intent;

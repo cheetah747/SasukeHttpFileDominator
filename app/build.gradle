@@ -10,10 +10,10 @@ android {
 
     defaultConfig {
         applicationId "com.sibyl.HttpFileDominator"
-        minSdkVersion 23
+        minSdkVersion 24 //日你妈，还不是为了适配8.0通知
         targetSdkVersion 28
         versionCode 34
-        versionName "3.3.1"
+        versionName "3.4.2"
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }
 

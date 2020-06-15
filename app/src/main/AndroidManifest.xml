@@ -25,6 +25,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".activities.TempActivity"/>
         <activity
             android:name="com.sibyl.HttpFileDominator.activities.MainActivity"
             android:launchMode="singleTask"
@@ -45,21 +46,21 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.sibyl.HttpFileDominator.activities.SendFileActivity"
-            android:label="@string/app_name"
-            android:excludeFromRecents="true">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.SEND" />-->
-            <!--                <category android:name="android.intent.category.DEFAULT" />-->
-            <!--                <data android:mimeType="*/*" />-->
-            <!--            </intent-filter>-->
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.SEND_MULTIPLE" />-->
-            <!--                <category android:name="android.intent.category.DEFAULT" />-->
-            <!--                <data android:mimeType="*/*" />-->
-            <!--            </intent-filter>-->
-        </activity>
+<!--        <activity-->
+<!--            android:name="com.sibyl.HttpFileDominator.activities.SendFileActivity"-->
+<!--            android:label="@string/app_name"-->
+<!--            android:excludeFromRecents="true">-->
+<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
+<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND_MULTIPLE" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+<!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
+<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+<!--        </activity>-->
     </application>
 
 </manifest>

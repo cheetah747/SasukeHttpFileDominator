@@ -1,4 +1,4 @@
-package com.sibyl.HttpFileDominator;
+package com.sibyl.HttpFileDominator.views;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+
+import com.sibyl.HttpFileDominator.R;
 
 /**
  * Created by Sasuke on 2017/7/27.

@@ -41,7 +41,10 @@ package com.sibyl.HttpFileDominator;
 
 import android.util.Log;
 
+import com.hjq.permissions.BuildConfig;
 import com.sibyl.HttpFileDominator.activities.BaseActivity;
+import com.sibyl.HttpFileDominator.utils.FileZipper;
+import com.sibyl.HttpFileDominator.utils.Util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -57,6 +60,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class HttpServerConnection implements Runnable {
 
@@ -359,8 +363,9 @@ public class HttpServerConnection implements Runnable {
         output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
         output.append(getFileSizeHeader());
+        //解决：请求头Date不能含中文，否则会报 ERR_INVALID_HTTP_RESPONSE 无效返回。所以这里Locale必须要填 Locale.ENGLISH
         SimpleDateFormat format = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss zzz");
+                "EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
 
 
         output.append("Date: " + format.format(new Date()) + "\r\n");
@@ -412,7 +417,7 @@ public class HttpServerConnection implements Runnable {
                 //解决：以下响应头设置使支持视频文件的进度条拖动，不设置的话会无法拖动进度条
                 //参考资料：https://blog.csdn.net/hudaijun/article/details/87456583
                 output.append("Accept-Ranges:  bytes\r\n");
-                output.append("Content-Range:  bytes 0-10485760/" + theUriInterpretation.getSize()).append("\r\n");
+                output.append("Content-Range:  bytes 0-10485760/" + theUriInterpretation.getSize() + "\r\n");
             }
         }
         output.append("\r\n");
