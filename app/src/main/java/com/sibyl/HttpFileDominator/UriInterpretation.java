@@ -185,7 +185,7 @@ public class UriInterpretation {
                 return;
             }
             if (extension.equals(".txt")) {
-                mime = "text/plain";
+                mime = "text/plain; charset=utf-8";
                 return;
             }
             if (extension.equals(".html")) {
