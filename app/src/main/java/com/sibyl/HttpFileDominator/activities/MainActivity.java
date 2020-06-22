@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 import com.sibyl.HttpFileDominator.LoadWaitDominator;
@@ -26,9 +27,13 @@ import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
 import com.sibyl.HttpFileDominator.UriInterpretation;
 import com.sibyl.HttpFileDominator.utils.BatteryOptiDominator;
+import com.sibyl.HttpFileDominator.utils.ClipboardUtil;
+import com.sibyl.HttpFileDominator.utils.JsonDominator;
+import com.sibyl.HttpFileDominator.utils.MySnackbarKt;
 import com.sibyl.HttpFileDominator.utils.NotiDominator;
 import com.sibyl.HttpFileDominator.utils.ThreadManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +43,13 @@ public class MainActivity extends BaseActivity {
     public static final int REQUEST_CODE = 1024;
 
     private NotiDominator notiDominator;
+
+    private boolean isClipboardMode = false;//是否是剪切板模式
+
+    ImageButton clipboardBtn;
+
+    FloatingActionButton fab;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +67,7 @@ public class MainActivity extends BaseActivity {
 
         setupNavigationViews();
         createViewClickListener();
-        setupPickItemView();
+        initViews();
         // debugSendFileActivity();
 
 
@@ -68,7 +80,7 @@ public class MainActivity extends BaseActivity {
                 //注：以下是耗时操作
                 ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(getIntent());
                 if (sharedUriList != null) {
-                    dealWithNewUris(sharedUriList);
+                    dealWithNewUris(sharedUriList);//在 onCreate() 里
                 }
             }
         });
@@ -90,29 +102,22 @@ public class MainActivity extends BaseActivity {
                     loadWait.show(LoadWaitDominator.LOADING);
                 }
                 //注：以下是耗时操作
-                ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(newIntent);
+                final ArrayList<UriInterpretation> sharedUriList = getIntentFileUris(newIntent);
                 if (sharedUriList != null) {
-                    dealWithNewUris(sharedUriList);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dealWithNewUris(sharedUriList);//在 onNewIntent() 里
+                        }
+                    });
                 }
             }
         });
     }
 
-//    private void debugSendFileActivity() {
-//        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
-//            String path = "/mnt/sdcard/m.txt";
-//
-//            Intent intent = new Intent(this, SendFileActivity.class);
-//            intent.addCategory("android.intent.category.DEFAULT");
-//            intent.putExtra(Intent.EXTRA_TEXT, path);
-//            // intent.setType("inode/directory");
-//
-//            startActivity(intent);
-//        }
-//    }
-
-    private void setupPickItemView() {
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+    private void initViews() {
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -122,28 +127,66 @@ public class MainActivity extends BaseActivity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
-//        findViewById(R.id.pick_items).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-//                    intent.setType("*/*");
-//                    startActivityForResult(intent, REQUEST_CODE);
-////                } else {
-////                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-////                    intent.setType("*/*");
-////                    startActivityForResult(intent, REQUEST_CODE);
-////                }
-//            }
-//        });
+
+        //共享剪切板模式
+        clipboardBtn = findViewById(R.id.clipboardBtn);
+        clipboardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isClipboardMode = !isClipboardMode;
+                refreshClipModeVisibility();
+//                Snackbar.make(fab, getString(isClipboardMode ? R.string.clipboard_mode_on : R.string.clipboard_mode_off), Snackbar.LENGTH_LONG).show();
+                MySnackbarKt.show(fab,getString(isClipboardMode ? R.string.clipboard_mode_on : R.string.clipboard_mode_off));
+                dealChangeMode();//点击切换模式按钮时
+            }
+        });
+        //初始刷
+        refreshClipModeVisibility();//在 initViews() 里
     }
 
-//    private void setViewsVisible() {
-//        findViewById(R.id.link_layout).setVisibility(View.VISIBLE);
-////        findViewById(R.id.navigation_layout).setVisibility(View.VISIBLE);
-//    }
+    /**
+     * 切换 剪切板模式 和 普通模式 时的处理。
+     */
+    public void dealChangeMode(){
+        ArrayList<UriInterpretation> tempUris = MyHttpServer.getNormalUris();//先加载默认模式的数据
+        if (isClipboardMode){
+            //剪切板内容写入到文件
+            JsonDominator.fire2Dir(ClipboardUtil.getText(MainActivity.this), getClipboardFile());
+            tempUris = new ArrayList<>();
+            tempUris.add(new UriInterpretation(Uri.fromFile(getClipboardFile()), ClipboardUtil.getText(MainActivity.this), getContentResolver()));
+            MyHttpServer.setClipboardUris(tempUris);
+        }
+
+        if (httpServer == null) {
+            initHttpServer(tempUris);//在dealChangeMode()中
+        } /*else {//如果已经建立起http服务了，那只需要添加文件并显示即可
+            MyHttpServer.changeUrisByMode(isClipboardMode);
+        }*/
+        MyHttpServer.changeUrisByMode(isClipboardMode);
+
+        flexboxLayout.removeAllViews();
+        addNewFlex2UI(tempUris,loadWait);
+    }
+
+    /**获取剪切板缓存文件*/
+    private File getClipboardFile(){
+        return new File(getExternalFilesDir(null).getAbsolutePath() + File.separator + "clipboard.txt");
+    }
+
+    public void refreshClipModeVisibility(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                clipboardBtn.setImageResource(isClipboardMode? R.drawable.ic_clipboard_on : R.drawable.ic_clipboard_off );
+                if (isClipboardMode){
+                    fab.hide();
+                }else{
+                    fab.show();
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -157,32 +200,40 @@ public class MainActivity extends BaseActivity {
                     }
                     ArrayList<UriInterpretation> fileUris = getFileUris(data);
                     if (fileUris != null && !fileUris.isEmpty()) {
-                        dealWithNewUris(fileUris);
+                        dealWithNewUris(fileUris);//在 onActivityResult() 里
                     }
                 }
             });
         }
     }
 
-    private void dealWithNewUris(ArrayList<UriInterpretation> uriList) {
-        if (isFinishing()) return;
+    private void dealWithNewUris(ArrayList<UriInterpretation> newUriList) {
+        if (isFinishing() || newUriList == null || newUriList.isEmpty()) return;
         //先过滤一波已经添加过的
-        Iterator<UriInterpretation> it = uriList.iterator();
+        Iterator<UriInterpretation> it = newUriList.iterator();
         while (it.hasNext()) {
             UriInterpretation uriInterpretation = it.next();
-            if (!MyHttpServer.GetFiles().isEmpty() && MyHttpServer.GetFiles().contains(uriInterpretation)) {
+            if (!MyHttpServer.getNormalUris().isEmpty() && MyHttpServer.getNormalUris().contains(uriInterpretation)) {
                 it.remove();
             }
         }
         //如果没有建立起http服务时==========
         if (httpServer == null) {
-            initHttpServer(uriList);
-            showIPText();
-        } else {//如果已经建立起http服务了，那只需要添加文件并显示即可
-            MyHttpServer.GetFiles().addAll(uriList);
+            initHttpServer(newUriList);//在 dealWithNewUris() 中
+        } /*else {//如果已经建立起http服务了，那只需要添加文件并显示即可
+            MyHttpServer.getNormalUris().addAll(newUriList);
+        }*/
+        MyHttpServer.getNormalUris().addAll(newUriList);
+        //切换到常规模式
+        if (isClipboardMode){
+            flexboxLayout.removeAllViews();
         }
+        isClipboardMode = false;
+        addNewFlex2UI(newUriList, loadWait);
+        MyHttpServer.changeUrisByMode(isClipboardMode);
+        refreshClipModeVisibility();//在 dealWithNewUris() 里
         //显示到UI
-        addNewFlex2UI(uriList, loadWait);
+
     }
 
 
@@ -194,6 +245,18 @@ public class MainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //如果是剪切板模式
+                if (newUriList.size() == 1 && newUriList.get(0).isClipboardType){
+                    final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    view.findViewById(R.id.divider).setVisibility(View.GONE);
+                    String showText = newUriList.get(0).clipboardText.isEmpty()?"（剪切板为空）" : newUriList.get(0).clipboardText;
+                    ((TextView) view.findViewById(R.id.itemNameTv)).setText(showText);
+                    view.findViewById(R.id.itemDeleteBtn).setVisibility(View.GONE);//不需要叉叉
+                    flexboxLayout.addView(view);
+                    loadWait.dismissAll();
+                    return;
+                }
+                //如果是普通模式
                 for (UriInterpretation uriInterpretation : newUriList) {
                     final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
                     view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
@@ -202,15 +265,16 @@ public class MainActivity extends BaseActivity {
                     ((ImageButton) view.findViewById(R.id.itemDeleteBtn)).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            int deleteIndex = MyHttpServer.GetFiles().indexOf((UriInterpretation) view.getTag());
+                            int deleteIndex = MyHttpServer.getNormalUris().indexOf((UriInterpretation) view.getTag());
                             if (deleteIndex != -1) {
                                 flexboxLayout.removeViewAt(deleteIndex);
-                                MyHttpServer.GetFiles().remove(deleteIndex);
+                                MyHttpServer.getNormalUris().remove(deleteIndex);
                                 //如果删光了
-                                if (MyHttpServer.GetFiles().isEmpty()) {
+                                if (MyHttpServer.getNormalUris().isEmpty()) {
                                     link_msg.setText("");
                                     stopServer();
-                                    Snackbar.make(fab, getString(R.string.files_clear_stop_server), Snackbar.LENGTH_LONG).show();
+//                                    Snackbar.make(fab, getString(R.string.files_clear_stop_server), Snackbar.LENGTH_LONG).show();
+                                    MySnackbarKt.show(fab,getString(R.string.files_clear_stop_server));
                                 }
                             }
                         }
@@ -228,24 +292,33 @@ public class MainActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
 //        uriPath.setText(savedInstanceState.getCharSequence("uriPath"));
         link_msg.setText(savedInstanceState.getCharSequence("link_msg"));
+        isClipboardMode = savedInstanceState.getBoolean("isClipboardMode");
+
         ArrayList<UriInterpretation> uriInterpretations = new ArrayList<>();
         for (Parcelable item : savedInstanceState.getParcelableArrayList("uriCaches")) {
             uriInterpretations.add(new UriInterpretation((Uri) item, this.getContentResolver()));
         }
-        dealWithNewUris(uriInterpretations);
 
-//        if (!"".equals(savedInstanceState.getCharSequence("uriPath"))) {
-//            setViewsVisible();
-//        }
+        MyHttpServer.setNormalUris(uriInterpretations);
+        refreshClipModeVisibility();//在 onRestoreInstanceState() 里
+        //必须要在主线程里，否则获取剪切板是空的
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                dealChangeMode();//通过 onRestoreInstanceState() 恢复时
+            }
+        });
+
+//        dealWithNewUris(uriInterpretations);
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence("link_msg", link_msg.getText());
-//        outState.putCharSequence("uriPath", uriPath.getText());
-        // Save the values you need from your textview into "outState"-object
+        outState.putBoolean("isClipboardMode",isClipboardMode);
         ArrayList<Uri> uriCaches = new ArrayList<>();
-        for (UriInterpretation item : MyHttpServer.GetFiles()) {
+        for (UriInterpretation item : MyHttpServer.getNormalUris()) {
             uriCaches.add(item.getUri());
         }
         outState.putParcelableArrayList("uriCaches", uriCaches);
@@ -320,14 +393,16 @@ public class MainActivity extends BaseActivity {
         if (myUri == null) {
             String tempString = (String) extras.get(Intent.EXTRA_TEXT);
             if (tempString == null) {
-                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
+                MySnackbarKt.show(findViewById(android.R.id.content),"Error obtaining the file path");
                 return null;
             }
 
             myUri = Uri.parse(tempString);
 
             if (myUri == null) {
-                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
+                MySnackbarKt.show(findViewById(android.R.id.content),"Error obtaining the file path");
                 return null;
             }
         }
@@ -426,7 +501,6 @@ public class MainActivity extends BaseActivity {
 //            finish();//你傻啊，自己把页面关掉干嘛？？？？有病 ？？？？操你妈
             return;
         }
-
         if (notiDominator == null){
             notiDominator = new NotiDominator(this);
         }
@@ -435,9 +509,10 @@ public class MainActivity extends BaseActivity {
         listOfServerUris = httpServer.listOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
 
+        showIPText();
         httpServer.setBaseActivity(this);
 //        httpServer.setFiles(myUris);
-        MyHttpServer.GetFiles().addAll(myUris);
+
 
     }
 

@@ -71,7 +71,10 @@ public class MyHttpServer extends Thread {
 
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
     private static int port;
-    private static ArrayList<UriInterpretation> fileUris = new ArrayList<>();
+    private static ArrayList<UriInterpretation> fileUris = new ArrayList<>();//主列表
+    private static ArrayList<UriInterpretation> clipboardUris = new ArrayList<>();
+    private static ArrayList<UriInterpretation> normalUris = new ArrayList<>();
+
     private static ServerSocket serverSocket = null;
     private static BaseActivity launcherActivity = null;
     private boolean webserverLoop = true;
@@ -86,6 +89,7 @@ public class MyHttpServer extends Thread {
 
     // default port is 80
     public MyHttpServer(int listen_port){
+//        fileUris = isClipboardMode? clipboardUris : normalUris;
         port = listen_port;
         if (serverSocket == null) {
             this.start();
@@ -96,16 +100,53 @@ public class MyHttpServer extends Thread {
         MyHttpServer.launcherActivity = baseActivity;
     }
 
-    public static void setFiles(ArrayList<UriInterpretation> fileUris) {
-        MyHttpServer.fileUris = fileUris;
-    }
+//    public static void setFiles(ArrayList<UriInterpretation> fileUris) {
+//        MyHttpServer.fileUris = fileUris;
+//    }
+//
+//    public static void setClipboardUris(ArrayList<UriInterpretation> clipboardUris) {
+//        MyHttpServer.clipboardUris = clipboardUris;
+//    }
 
     public static ArrayList<UriInterpretation> GetFiles() {
         return MyHttpServer.fileUris;
     }
 
+    public static ArrayList<UriInterpretation> getNormalUris() {
+        return normalUris;
+    }
+
+    public static void setNormalUris(ArrayList<UriInterpretation> normalUris) {
+        MyHttpServer.normalUris = normalUris;
+    }
+
+    public static ArrayList<UriInterpretation> getClipboardUris() {
+        return MyHttpServer.clipboardUris;
+    }
+
+    public static void  setClipboardUris(ArrayList<UriInterpretation> newUris){
+        MyHttpServer.clipboardUris = newUris;
+    }
+
+    /**根据类型来传uri们*/
+    public static void addAllUrisByMode(boolean isClipboardMode, ArrayList<UriInterpretation> newUris) {
+        if (isClipboardMode) {
+            clipboardUris.addAll(newUris);
+            fileUris = clipboardUris;
+        } else {
+            normalUris.addAll(newUris);
+            fileUris = normalUris;
+        }
+    }
+
+    public static void changeUrisByMode(boolean isClipboardMode){
+        fileUris = isClipboardMode? clipboardUris : normalUris;
+    }
+
     public static void clearFiles() {
         MyHttpServer.fileUris.clear();
+        MyHttpServer.normalUris.clear();
+//        MyHttpServer.clipboardUris.clear();
     }
 
     public static String getLocalIpAddress() {

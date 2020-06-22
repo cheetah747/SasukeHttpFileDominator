@@ -36,7 +36,7 @@ class NotiDominator(val context: Context) {
         // 兼容  API 26，Android 8.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // 第三个参数表示通知的重要程度，默认则只在通知栏闪烁一下
-            val channel = NotificationChannel("HttpFileDominator", "HTTP文件支配者", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel("HttpFileDominator", "HTTP文件服务器", NotificationManager.IMPORTANCE_DEFAULT)
             channel.enableLights(false)
             channel.enableVibration(false)
             channel.vibrationPattern = longArrayOf(0)

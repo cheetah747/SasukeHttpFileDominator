@@ -15,9 +15,11 @@
     <string name="url_clipboard">URLはコピーしました</string>
     <string name="pls_add_first">先にファイルを追加してください、サービスを自動的に起動します</string>
     <string name="privacy_policy">プライバシー</string>
-    <string name="disconnected_ip">クライアント%sダウンロード完了</string>
-    <string name="connected_ip">クライアント%sダウンロードスタート</string>
+    <string name="disconnected_ip">クライアント%s去った</string>
+    <string name="connected_ip">クライアント%s来た</string>
     <string name="files_clear_stop_server">ファイルをクリアしました、サービス中止</string>
+    <string name="clipboard_mode_on">【クリップボードモード】に入ります</string>
+    <string name="clipboard_mode_off">【クリップボードモード】退出</string>
     <string name="stop">閉じる</string>
 
 </resources>

@@ -29,12 +29,21 @@ public class UriInterpretation {
     private String path = null;
     private String mime;
     private boolean isDirectory = false;
+    public boolean isClipboardType = false;
     private Uri uri;
     private ContentResolver contentResolver;
+    public String clipboardText = "";
 
     public InputStream getInputStream() throws FileNotFoundException {
         return contentResolver.openInputStream(uri);
     }
+
+    public UriInterpretation(Uri uri, String clipboardText, ContentResolver contentResolver) {
+        this(uri,contentResolver);
+        this.isClipboardType = true;
+        this.clipboardText = clipboardText;
+    }
+
 
     public UriInterpretation(Uri uri, ContentResolver contentResolver) {
         this.uri = uri;

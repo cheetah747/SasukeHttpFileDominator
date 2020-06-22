@@ -42,15 +42,26 @@
             tools:text="http://127.0.0.1/" />
     </HorizontalScrollView>
 
+<!--    <ImageButton-->
+<!--        android:id="@+id/shareBtn"-->
+<!--        android:layout_width="45dp"-->
+<!--        android:layout_height="45dp"-->
+<!--        android:backgroundTint="@color/transparent"-->
+<!--        android:contentDescription="分享"-->
+<!--        android:padding="5dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:src="@drawable/ic_share" />-->
+
     <ImageButton
-        android:id="@+id/shareBtn"
+        android:id="@+id/clipboardBtn"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:backgroundTint="@color/transparent"
-        android:contentDescription="分享"
+        android:contentDescription="剪切板"
         android:padding="5dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_share" />
+        android:src="@drawable/ic_clipboard_off" />
+
 
     <ImageButton
         android:id="@+id/copyBtn"

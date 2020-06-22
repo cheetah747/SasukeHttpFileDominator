@@ -16,4 +16,5 @@
     <color name="dialog_background_color">#CFCFCF</color>
     <color name="dialog_text_color">#000000</color>
     <color name="progressbar_color">#FFFFFF</color>
+    <color name="snackbar_background_color">#009688</color>
 </resources>

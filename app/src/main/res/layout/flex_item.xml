@@ -22,6 +22,7 @@
         <ImageView
             android:id="@+id/isFolderIcon"
             android:layout_marginLeft="8dp"
+            android:visibility="gone"
             android:scaleType="fitCenter"
             android:tint="@color/white"
             android:src="@drawable/icon_folder"
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content" />
 
         <View
+            android:id="@+id/divider"
             android:background="@color/white"
             android:layout_width="1px"
             android:layout_height="match_parent" />

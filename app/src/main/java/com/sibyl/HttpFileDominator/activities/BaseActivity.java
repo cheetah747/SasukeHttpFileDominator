@@ -32,15 +32,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.sibyl.HttpFileDominator.BuildConfig;
-import com.sibyl.HttpFileDominator.utils.DensityUtil;
-import com.sibyl.HttpFileDominator.views.DisplayRawFileFragment;
 import com.sibyl.HttpFileDominator.LoadWaitDominator;
 import com.sibyl.HttpFileDominator.MyHttpServer;
 import com.sibyl.HttpFileDominator.R;
 import com.sibyl.HttpFileDominator.UriInterpretation;
+import com.sibyl.HttpFileDominator.utils.DensityUtil;
+import com.sibyl.HttpFileDominator.utils.MySnackbarKt;
 import com.sibyl.HttpFileDominator.utils.ZxingCodeTool;
+import com.sibyl.HttpFileDominator.views.DisplayRawFileFragment;
 
 import java.util.ArrayList;
 
@@ -58,10 +58,11 @@ public class BaseActivity extends AppCompatActivity {
     protected FlexboxLayout fileNameContainer;
 
     protected ImageButton qrcodeBtn;
-    protected ImageButton shareBtn;
+//    protected ImageButton clipboardBtn;
     protected ImageButton copyBtn;
 
     protected FlexboxLayout flexboxLayout;
+    protected FlexboxLayout clipboardLayout;
     protected LoadWaitDominator loadWait;
     // NavigationViews
 //    protected View bttnQrCode;
@@ -94,11 +95,13 @@ public class BaseActivity extends AppCompatActivity {
                 switch (inputMessage.what) {
                     case HANDLER_CONNECTION_START:
                         String msg = String.format(getString(R.string.connected_ip), (String) inputMessage.obj);
-                        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+//                        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+                        MySnackbarKt.show(findViewById(android.R.id.content),msg);
                         break;
                     case HANDLER_CONNECTION_END:
                         String msg2 = String.format(getString(R.string.disconnected_ip), (String) inputMessage.obj);
-                        Snackbar.make(findViewById(android.R.id.content), msg2, Snackbar.LENGTH_LONG).show();
+//                        Snackbar.make(findViewById(android.R.id.content), msg2, Snackbar.LENGTH_LONG).show();
+                        MySnackbarKt.show(findViewById(android.R.id.content),msg2);
                         break;
                     default:
                         super.handleMessage(inputMessage);
@@ -118,6 +121,7 @@ public class BaseActivity extends AppCompatActivity {
         loadWait = new LoadWaitDominator(this, (RelativeLayout) findViewById(R.id.containerLayout));
         link_msg = (TextView) findViewById(R.id.link_msg);
         fileNameContainer = (FlexboxLayout) findViewById(R.id.fileNameContainer);
+        clipboardLayout = (FlexboxLayout) findViewById(R.id.clipboardContainer);
 //        uriPath = (TextView) findViewById(R.id.uriPath);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -129,7 +133,7 @@ public class BaseActivity extends AppCompatActivity {
 //        share = findViewById(R.id.button_share_url);
 //        changeIp = findViewById(R.id.change_ip);
         qrcodeBtn = findViewById(R.id.qrcodeBtn);
-        shareBtn = findViewById(R.id.shareBtn);
+//        clipboardBtn = findViewById(R.id.clipboardBtn);
         copyBtn = findViewById(R.id.copyBtn);
         flexboxLayout = findViewById(R.id.fileNameContainer);
     }
@@ -139,7 +143,8 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(link_msg.getText().toString())) {
-                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+                    MySnackbarKt.show(fab,getString(R.string.pls_add_first));
                     return;
                 }
                 generateBarCodeIfPossible();
@@ -157,26 +162,27 @@ public class BaseActivity extends AppCompatActivity {
 //                Snackbar.make(findViewById(android.R.id.content), getString(R.string.now_sharing_anymore), Snackbar.LENGTH_SHORT).show();
 //            }
 //        });
-
-        shareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(link_msg.getText().toString())) {
-                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, preferredServerUrl);
-                startActivity(Intent.createChooser(i, BaseActivity.this.getString(R.string.share_url)));
-            }
-        });
+//
+//        shareBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (TextUtils.isEmpty(link_msg.getText().toString())) {
+//                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+//                    return;
+//                }
+//                Intent i = new Intent(Intent.ACTION_SEND);
+//                i.setType("text/plain");
+//                i.putExtra(Intent.EXTRA_TEXT, preferredServerUrl);
+//                startActivity(Intent.createChooser(i, BaseActivity.this.getString(R.string.share_url)));
+//            }
+//        });
 
         link_msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (TextUtils.isEmpty(link_msg.getText().toString())){
-                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+                    MySnackbarKt.show(fab,getString(R.string.pls_add_first));
                     return;
                 }
                 createChangeIpDialog();
@@ -187,7 +193,8 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(link_msg.getText().toString())) {
-                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(fab, getString(R.string.pls_add_first), Snackbar.LENGTH_LONG).show();
+                    MySnackbarKt.show(fab,getString(R.string.pls_add_first));
                     return;
                 }
                 saveServerUrlToClipboard();
@@ -278,7 +285,9 @@ public class BaseActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(preferredServerUrl, preferredServerUrl));
 
-        Snackbar.make(fab, getString(R.string.url_clipboard), Snackbar.LENGTH_LONG).show();
+//        Snackbar.make(fab, getString(R.string.url_clipboard), Snackbar.LENGTH_LONG).show();
+        MySnackbarKt.show(fab,getString(R.string.url_clipboard));
+
 //        Snackbar.make(findViewById(android.R.id.content), getString(R.string.url_clipboard), Snackbar.LENGTH_LONG).show();
     }
 

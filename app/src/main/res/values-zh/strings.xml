@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HTTP文件支配者</string>
+    <string name="app_name">HTTP文件服务器</string>
     <string name="alert_dialog_cancel">取消</string>
     <string name="alert_dialog_ok">确定</string>
     <string name="button_qrcode">二维码</string>
@@ -15,9 +15,11 @@
     <string name="url_clipboard">网页URL已复制到剪贴板</string>
     <string name="pls_add_first">请先添加文件，服务会自动启动</string>
     <string name="privacy_policy">隐私协议</string>
-    <string name="disconnected_ip">客户端%s下载完成</string>
-    <string name="connected_ip">客户端%s开始下载</string>
+    <string name="disconnected_ip">客户端%s走了</string>
+    <string name="connected_ip">客户端%s来了</string>
     <string name="files_clear_stop_server">文件已清空，服务停止</string>
+    <string name="clipboard_mode_on">【剪切板模式】开启</string>
+    <string name="clipboard_mode_off">【剪切板模式】关闭</string>
     <string name="stop">停止</string>
 
 
