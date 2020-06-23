@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sibyl.HttpFileDominator">
+    package="com.sibyl.httpfiledominator">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -25,9 +25,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.TempActivity"/>
+        <activity android:name="com.sibyl.httpfiledominator.activities.TempActivity"/>
         <activity
-            android:name=".mainactivity.view.MainActivity"
+            android:name="com.sibyl.httpfiledominator.mainactivity.view.MainActivity"
             android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>
