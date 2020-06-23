@@ -44,7 +44,7 @@ import com.sibyl.HttpFileDominator.views.DisplayRawFileFragment;
 
 import java.util.ArrayList;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity0 extends AppCompatActivity {
 
     public static final int HANDLER_CONNECTION_START = 42;
     public static final int HANDLER_CONNECTION_END = 4242;
@@ -77,12 +77,12 @@ public class BaseActivity extends AppCompatActivity {
 
     public void sendConnectionStartMessage(String ipAddress) {
         Log.d("mm", "begin: " + ipAddress  + " " + this);
-        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity.HANDLER_CONNECTION_START, ipAddress));
+        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity0.HANDLER_CONNECTION_START, ipAddress));
     }
 
     public void sendConnectionEndMessage(String ipAddress) {
         Log.d("mm", "end: " + ipAddress + " " + this);
-        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity.HANDLER_CONNECTION_END, ipAddress));
+        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity0.HANDLER_CONNECTION_END, ipAddress));
     }
 
     @Override

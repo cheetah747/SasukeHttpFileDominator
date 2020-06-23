@@ -30,6 +30,9 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
@@ -48,6 +51,14 @@ dependencies {
 
     //安卓6.0动态权限适配
     api 'com.hjq:xxpermissions:5.5'
+
+
+    //MVVM要用到的
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-alpha03"
+    // ViewModel and LiveData
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
 
 

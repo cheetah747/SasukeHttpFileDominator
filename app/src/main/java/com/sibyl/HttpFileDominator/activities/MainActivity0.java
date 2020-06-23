@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity0 extends BaseActivity0 {
 
     public static final int REQUEST_CODE = 1024;
 
@@ -151,9 +151,9 @@ public class MainActivity extends BaseActivity {
         ArrayList<UriInterpretation> tempUris = MyHttpServer.getNormalUris();//先加载默认模式的数据
         if (isClipboardMode){
             //剪切板内容写入到文件
-            JsonDominator.fire2Dir(ClipboardUtil.getText(MainActivity.this), getClipboardFile());
+            JsonDominator.fire2Dir(ClipboardUtil.getText(MainActivity0.this), getClipboardFile());
             tempUris = new ArrayList<>();
-            tempUris.add(new UriInterpretation(Uri.fromFile(getClipboardFile()), ClipboardUtil.getText(MainActivity.this), getContentResolver()));
+            tempUris.add(new UriInterpretation(Uri.fromFile(getClipboardFile()), ClipboardUtil.getText(MainActivity0.this), getContentResolver()));
             MyHttpServer.setClipboardUris(tempUris);
         }
 
@@ -247,7 +247,7 @@ public class MainActivity extends BaseActivity {
             public void run() {
                 //如果是剪切板模式
                 if (newUriList.size() == 1 && newUriList.get(0).isClipboardType){
-                    final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item, flexboxLayout, false);
                     view.findViewById(R.id.divider).setVisibility(View.GONE);
                     String showText = newUriList.get(0).clipboardText.isEmpty()?"（剪切板为空）" : newUriList.get(0).clipboardText;
                     ((TextView) view.findViewById(R.id.itemNameTv)).setText(showText);
@@ -258,7 +258,7 @@ public class MainActivity extends BaseActivity {
                 }
                 //如果是普通模式
                 for (UriInterpretation uriInterpretation : newUriList) {
-                    final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item, flexboxLayout, false);
                     view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
                     ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
                     ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory() ? View.VISIBLE : View.GONE);
@@ -461,19 +461,19 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void hasPermission(List<String> granted, boolean isAll) {
                     if (isAll) {
-                        BatteryOptiDominator.requestIgnoreBatteryOpti(MainActivity.this);
+                        BatteryOptiDominator.requestIgnoreBatteryOpti(MainActivity0.this);
                     }
                 }
 
                 @Override
                 public void noPermission(List<String> denied, boolean quick) {
                     if (quick) {
-                        new AlertDialog.Builder(MainActivity.this)
+                        new AlertDialog.Builder(MainActivity0.this)
                                 .setMessage("请允许权限")
                                 .setPositiveButton("好的", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        XXPermissions.gotoPermissionSettings(MainActivity.this);
+                                        XXPermissions.gotoPermissionSettings(MainActivity0.this);
                                     }
                                 })
                                 .show();

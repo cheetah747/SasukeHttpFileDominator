@@ -8,8 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.sibyl.HttpFileDominator.R
-import com.sibyl.HttpFileDominator.activities.MainActivity
 import com.sibyl.HttpFileDominator.activities.TempActivity
+import com.sibyl.HttpFileDominator.mainactivity.view.MainActivity
 
 /**
  * @author Sasuke on 2020/6/15.

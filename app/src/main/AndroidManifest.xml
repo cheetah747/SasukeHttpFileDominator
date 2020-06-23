@@ -27,7 +27,7 @@
 
         <activity android:name=".activities.TempActivity"/>
         <activity
-            android:name="com.sibyl.HttpFileDominator.activities.MainActivity"
+            android:name=".mainactivity.view.MainActivity"
             android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>

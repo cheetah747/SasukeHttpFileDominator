@@ -98,7 +98,8 @@ public class HttpServerConnection implements Runnable {
     public void run() {
         ipAddress = getClientIpAddress();
 
-        launcherActivity.sendConnectionStartMessage(ipAddress);
+        //SasukeTodo 先注释掉，后面把Activity整好了记得打开
+//        launcherActivity.sendConnectionStartMessage(ipAddress);
 
         try {
             InputStream theInputStream;
@@ -132,7 +133,8 @@ public class HttpServerConnection implements Runnable {
             }
         } finally {
             s("Closing connection.");
-            launcherActivity.sendConnectionEndMessage(ipAddress);
+            //SasukeTodo 先注释掉，后面把Activity整好了记得打开
+//            launcherActivity.sendConnectionEndMessage(ipAddress);
         }
     }
 
