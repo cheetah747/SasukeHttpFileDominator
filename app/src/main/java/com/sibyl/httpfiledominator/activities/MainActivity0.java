@@ -412,8 +412,7 @@ public class MainActivity0 extends BaseActivity0 {
     }
 
     private ArrayList<UriInterpretation> getUrisForActionSendMultiple(Intent dataIntent, ArrayList<UriInterpretation> theUris) {
-        ArrayList<Parcelable> list = dataIntent
-                .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        ArrayList<Parcelable> list = dataIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
         if (list != null) {
             for (Parcelable parcelable : list) {
                 Uri stream = (Uri) parcelable;
@@ -506,7 +505,8 @@ public class MainActivity0 extends BaseActivity0 {
         }
         notiDominator.showNotifi();
         httpServer = new MyHttpServer(1120);
-        listOfServerUris = httpServer.listOfIpAddresses();
+        //注释掉防报错
+//        listOfServerUris = httpServer.listOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
 
         showIPText();

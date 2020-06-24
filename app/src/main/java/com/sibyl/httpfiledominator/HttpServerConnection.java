@@ -248,7 +248,7 @@ public class HttpServerConnection implements Runnable {
             if (!sendOnlyHeader) {
 
                 if (theUriInterpretation.isDirectory() || fileUriZ.size() > 1) {
-                    FileZipper zz = new FileZipper(output, fileUriZ, launcherActivity.getContentResolver());
+                    FileZipper zz = new FileZipper(output, fileUriZ, MyApp.getInstance().getContentResolver());
                     zz.run();
                 } else {
                     byte[] buffer = new byte[8 * 1024 * 1024];//8M

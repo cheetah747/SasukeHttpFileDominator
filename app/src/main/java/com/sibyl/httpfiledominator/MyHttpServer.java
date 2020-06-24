@@ -68,7 +68,6 @@ import java.util.concurrent.Executors;
 public class MyHttpServer extends Thread {
 
     // by design, we only serve one file at a time.
-
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
     private static int port;
     private static ArrayList<UriInterpretation> fileUris = new ArrayList<>();//主列表
@@ -126,17 +125,6 @@ public class MyHttpServer extends Thread {
 
     public static void  setClipboardUris(ArrayList<UriInterpretation> newUris){
         MyHttpServer.clipboardUris = newUris;
-    }
-
-    /**根据类型来传uri们*/
-    public static void addAllUrisByMode(boolean isClipboardMode, ArrayList<UriInterpretation> newUris) {
-        if (isClipboardMode) {
-            clipboardUris.addAll(newUris);
-            fileUris = clipboardUris;
-        } else {
-            normalUris.addAll(newUris);
-            fileUris = normalUris;
-        }
     }
 
     public static void changeUrisByMode(boolean isClipboardMode){
@@ -215,7 +203,7 @@ public class MyHttpServer extends Thread {
         }
     }
 
-    public CharSequence[] listOfIpAddresses() {
+    public ArrayList<String> listOfIpAddresses() {
         ArrayList<String> arrayOfIps = new ArrayList<String>();
 
 
@@ -259,9 +247,9 @@ public class MyHttpServer extends Thread {
             }
         });
 
-        CharSequence[] output = arrayOfIps.toArray(new CharSequence[arrayOfIps
-                .size()]);
-        return output;
+//        CharSequence[] output = arrayOfIps.toArray(new CharSequence[arrayOfIps
+//                .size()]);
+        return arrayOfIps;
     }
 
     private boolean normalBind(int thePort) {

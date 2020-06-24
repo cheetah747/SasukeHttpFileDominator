@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="model"
+            type="com.sibyl.httpfiledominator.mainactivity.model.MainModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -21,28 +25,22 @@
                 layout="@layout/toolbar" />
 
             <include
+                bind:ipText="@{model.preferredServerUrl}"
                 android:id="@+id/link_layout"
                 layout="@layout/link_layout" />
 
-            <RelativeLayout
-                android:id="@+id/containerLayout"
-                android:layout_marginTop="-6dp"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrolling_information"
                 android:layout_width="match_parent"
+                android:fillViewport="true"
                 android:layout_height="match_parent">
 
-                <androidx.core.widget.NestedScrollView
-                    android:id="@+id/scrolling_information"
+                <RelativeLayout
+                    android:id="@+id/containerLayout"
+                    android:animateLayoutChanges="true"
+                    android:layout_marginTop="-6dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/fileNameContainer"
-                        android:animateLayoutChanges="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:flexWrap="wrap"
-                        app:alignItems="flex_start"
-                        app:alignContent="flex_start" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/clipboardContainer"
@@ -53,8 +51,17 @@
                         app:alignItems="flex_start"
                         app:alignContent="flex_start" />
 
-                </androidx.core.widget.NestedScrollView>
-            </RelativeLayout>
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/fileNameContainer"
+                        android:animateLayoutChanges="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:flexWrap="wrap"
+                        app:alignItems="flex_start"
+                        app:alignContent="flex_start" />
+                </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
+
             <!--        </RelativeLayout>-->
 
         </LinearLayout>

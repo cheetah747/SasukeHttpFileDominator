@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2017/10/20
  */
 public class ThreadManager {
-    public static ThreadPool instance;
+    private static ThreadPool instance;
 
     /**
      * 获取单例的线程池对象
