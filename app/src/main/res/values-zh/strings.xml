@@ -21,6 +21,6 @@
     <string name="clipboard_mode_on">【剪切板模式】开启</string>
     <string name="clipboard_mode_off">【剪切板模式】关闭</string>
     <string name="stop">停止</string>
-
+    <string name="clipboard_title_text">剪切板</string>
 
 </resources>

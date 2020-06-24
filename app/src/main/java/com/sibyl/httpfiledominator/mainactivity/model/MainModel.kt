@@ -11,6 +11,7 @@ import com.sibyl.httpfiledominator.MyHttpServer
 import com.sibyl.httpfiledominator.UriInterpretation
 import com.sibyl.httpfiledominator.mainactivity.repo.MainRepo
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * @author HUANGSHI-PC on 2020-03-06 0006.
@@ -30,7 +31,10 @@ class MainModel(val repo: MainRepo) : ViewModel() {
     val newUrisCache = MutableLiveData<List<UriInterpretation>>()
 
     /**是否剪切板模式*/
-    val isClipboardMode = MutableLiveData<Boolean>().apply { value = false }
+    val isClipboardMode = MutableLiveData<Boolean>()
+
+    /**刷新剪切板UI*/
+    val isRefreshClipboardUI = MutableLiveData<Boolean>()
 
     /**处理刚进页面时传入的Intent*/
     fun dealWithNewIntent(intent: Intent?) = viewModelScope.launch {
@@ -62,7 +66,6 @@ class MainModel(val repo: MainRepo) : ViewModel() {
     }
 
 
-
     /**对新uri的处理*/
     fun dealWithNewUris(newUriList: MutableList<UriInterpretation>?) = viewModelScope.launch {
         //先过滤一波已经添加过的
@@ -80,5 +83,21 @@ class MainModel(val repo: MainRepo) : ViewModel() {
         isClipboardMode.value = false
     }
 
-
+    /**
+     * 处理剪切板情况下的数据
+     */
+    fun createClipDataRefresh(clipboardFile: File) = viewModelScope.launch {
+        isLoading.value = true
+        try{
+            repo.writeClipboard2File(clipboardFile)
+            if (httpServer.value == null){
+                httpServer.value = MyHttpServer(1120)
+            }
+            isRefreshClipboardUI.value = true
+        }catch (e: Exception){
+            snackbarMsg.value = e.message
+        }finally {
+            isLoading.value = false
+        }
+    }
 }

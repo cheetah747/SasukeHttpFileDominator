@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -34,6 +35,7 @@ import com.sibyl.httpfiledominator.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.link_layout.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
+import java.io.File
 
 open class MainActivity : BaseActivity() {
     companion object {
@@ -46,11 +48,13 @@ open class MainActivity : BaseActivity() {
 
     val mainModel by lazy { ViewModelProviders.of(this, MainModelFactory(MainRepo())).get(MainModel::class.java) }
 
+    val clipboardFile by lazy { File(getExternalFilesDir(null).getAbsolutePath() + File.separator + "clipboard.txt") }
 
     protected var loadWait: LoadWaitDominator? = null
 
     val notiDominator by lazy { NotiDominator(this) }
 
+    var isShowModeChangeSnackbar = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
 //        window.setBackgroundDrawable(null)
@@ -74,7 +78,7 @@ open class MainActivity : BaseActivity() {
             stopServer()
             finish()
         }
-        mainModel.dealWithNewIntent(intent)
+        mainModel.dealWithNewIntent(newIntent)
     }
 
     /**绑他妈的*/
@@ -113,7 +117,7 @@ open class MainActivity : BaseActivity() {
                 runOnUiThread {
                     newUriList.forEach {
                         val view = LayoutInflater.from(this@MainActivity)
-                                .inflate(R.layout.flex_item, fileNameContainer, false)
+                                .inflate(R.layout.flex_item_files, fileNameContainer, false)
                         view.tag = it //把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
                         view.findViewById<TextView>(R.id.itemNameTv).text = it.path
                         view.findViewById<ImageView>(R.id.isFolderIcon).visibility = if (it.isDirectory) View.VISIBLE else View.GONE
@@ -140,7 +144,26 @@ open class MainActivity : BaseActivity() {
             isClipboardMode.observe(this@MainActivity, Observer {
                 MyHttpServer.changeUrisByMode(it)//切换主url
                 refreshClipModeVisibility(it)//切换组件显示状态
-                showSnackbar(fab, getString(if (it) R.string.clipboard_mode_on else R.string.clipboard_mode_off))
+                if (isShowModeChangeSnackbar){
+                    showSnackbar(fab, getString(if (it) R.string.clipboard_mode_on else R.string.clipboard_mode_off))
+                }
+                when(it){
+                    true -> createClipDataRefresh(clipboardFile)//剪切板模式，创建剪切板内容缓存文件，并刷新UI
+                    else -> if (MyHttpServer.getNormalUris().isEmpty()) stopServer()//如果 普通模式 && 并没有添加文件，就应该把服务关掉
+                }
+                isShowModeChangeSnackbar = true
+            })
+
+            //刷新剪切板UI显示
+            isRefreshClipboardUI.observe(this@MainActivity, Observer {
+                val view: View = if (clipboardContainer.childCount > 0) clipboardContainer.get(0)
+                                                else LayoutInflater.from(this@MainActivity).inflate(R.layout.flex_item_clipboard, clipboardContainer, false)
+                val uriInterpretation = MyHttpServer.getClipboardUris().get(0)
+                val showText = if (uriInterpretation.clipboardText.isEmpty()) "（剪切板为空）" else uriInterpretation.clipboardText
+                (view.findViewById<View>(R.id.itemNameTv) as TextView).text = showText
+                if (clipboardContainer.childCount == 0){
+                    clipboardContainer.addView(view)
+                }
             })
         }
     }
@@ -156,7 +179,7 @@ open class MainActivity : BaseActivity() {
         }
 
         clipboardBtn.setOnClickListener {
-            mainModel.isClipboardMode.value = !(mainModel.isClipboardMode.value ?:false)
+            mainModel.isClipboardMode.value = !(mainModel.isClipboardMode.value ?: false)
         }
 
         copyBtn.setOnClickListener {
@@ -188,6 +211,7 @@ open class MainActivity : BaseActivity() {
             fileNameContainer.visibility = if (isClipboardMode) View.GONE else View.VISIBLE
             if (isClipboardMode) {
                 fab.hide()
+                notiDominator.showNotifi()//剪切板模式必开通知，管你剪切板里有没有内容
             } else {
                 fab.show()
             }
@@ -241,17 +265,31 @@ open class MainActivity : BaseActivity() {
     }
 
     private fun stopServer() {
-        notiDominator.dismissAll(this)
+        notiDominator.dismissAll(this)//隐藏通知
         mainModel.httpServer.run {
             value?.stopServer()
             value = null
         }
         MyHttpServer.clearFiles()
+        //UI
+        if (isFinishing) return
+        mainModel.preferredServerUrl.set("")//IP栏不应该再显示IP
     }
 
     override fun onDestroy() {
         stopServer()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //如果为true，那就再赋一次true，激发它的观察者，以刷新剪切板UI
+        Handler().postDelayed( {
+            if (mainModel.isClipboardMode.value ?: false){
+                isShowModeChangeSnackbar = false//先禁用它的观察者里的Snackbar的显示
+                mainModel.isClipboardMode.value = true
+            }
+        },300)
     }
 
     /**

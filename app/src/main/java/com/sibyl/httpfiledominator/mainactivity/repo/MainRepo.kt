@@ -4,9 +4,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
 import com.sibyl.httpfiledominator.MyApp
+import com.sibyl.httpfiledominator.MyHttpServer
 import com.sibyl.httpfiledominator.UriInterpretation
+import com.sibyl.httpfiledominator.utils.ClipboardUtil
+import com.sibyl.httpfiledominator.utils.JsonDominator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.util.*
 
 /**
  * @author HUANGSHI-PC on 2020-03-06 0006.
@@ -59,5 +64,16 @@ class MainRepo {
             }
         }
         theUris
+    }
+
+
+    /**剪切板模式下的数据处理*/
+    suspend fun writeClipboard2File(clipboardFile: File) = withContext(Dispatchers.IO) {
+        //剪切板内容写入到文件
+        JsonDominator.fire2Dir(ClipboardUtil.getText(MyApp.instance), clipboardFile)
+        val tempUris = ArrayList<UriInterpretation>().apply {
+            add(UriInterpretation(Uri.fromFile(clipboardFile), ClipboardUtil.getText(MyApp.instance), MyApp.instance?.getContentResolver()))
+        }
+        MyHttpServer.setClipboardUris(tempUris)
     }
 }

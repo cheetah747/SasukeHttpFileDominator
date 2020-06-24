@@ -21,5 +21,7 @@
     <string name="clipboard_mode_on">【クリップボードモード】に入ります</string>
     <string name="clipboard_mode_off">【クリップボードモード】退出</string>
     <string name="stop">閉じる</string>
+    <string name="clipboard_title_text">クリップボード</string>
+
 
 </resources>

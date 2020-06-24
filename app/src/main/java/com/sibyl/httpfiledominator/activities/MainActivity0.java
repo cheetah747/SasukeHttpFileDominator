@@ -247,7 +247,7 @@ public class MainActivity0 extends BaseActivity0 {
             public void run() {
                 //如果是剪切板模式
                 if (newUriList.size() == 1 && newUriList.get(0).isClipboardType){
-                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item_files, flexboxLayout, false);
                     view.findViewById(R.id.divider).setVisibility(View.GONE);
                     String showText = newUriList.get(0).clipboardText.isEmpty()?"（剪切板为空）" : newUriList.get(0).clipboardText;
                     ((TextView) view.findViewById(R.id.itemNameTv)).setText(showText);
@@ -258,7 +258,7 @@ public class MainActivity0 extends BaseActivity0 {
                 }
                 //如果是普通模式
                 for (UriInterpretation uriInterpretation : newUriList) {
-                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item, flexboxLayout, false);
+                    final View view = LayoutInflater.from(MainActivity0.this).inflate(R.layout.flex_item_files, flexboxLayout, false);
                     view.setTag(uriInterpretation);//把uriInterpretation保存到tag，到时候点击时用它来找到实时的index
                     ((TextView) view.findViewById(R.id.itemNameTv)).setText(uriInterpretation.getPath());
                     ((ImageView) view.findViewById(R.id.isFolderIcon)).setVisibility(uriInterpretation.isDirectory() ? View.VISIBLE : View.GONE);

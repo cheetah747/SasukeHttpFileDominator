@@ -123,8 +123,9 @@ public class MyHttpServer extends Thread {
         return MyHttpServer.clipboardUris;
     }
 
-    public static void  setClipboardUris(ArrayList<UriInterpretation> newUris){
-        MyHttpServer.clipboardUris = newUris;
+    public static void setClipboardUris(ArrayList<UriInterpretation> newUris){
+        MyHttpServer.clipboardUris.clear();
+        MyHttpServer.clipboardUris.addAll(newUris);
     }
 
     public static void changeUrisByMode(boolean isClipboardMode){

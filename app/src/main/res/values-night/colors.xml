@@ -17,4 +17,6 @@
     <color name="dialog_text_color">#000000</color>
     <color name="progressbar_color">#FFFFFF</color>
     <color name="snackbar_background_color">#009688</color>
+    <color name="clipboard_card_title_color">#1E1E1E</color>
+
 </resources>
