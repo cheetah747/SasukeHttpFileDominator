@@ -58,25 +58,36 @@ open class MainActivity : BaseActivity() {
 //        window.setBackgroundDrawable(null)
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         super.onCreate(savedInstanceState)
-        if (intent.getBooleanExtra("isStopServer", false)) {
-            stopServer()
-            finish()
-        }
+//        if (intent.getBooleanExtra("isStopServer", false)) {
+//            stopServer()
+//            finish()
+//        }
         bind()
+        dealIntent(intent)
         setObservers()
         setListeners()
         grantPermissions() //操你妈6.0权限
-        mainModel.dealWithNewIntent(intent)
+        mainModel.dealNewIntentData(intent)
     }
 
     override fun onNewIntent(newIntent: Intent?) {
         super.onNewIntent(newIntent)
-        if (newIntent?.getBooleanExtra("isStopServer", false) ?: false) {
-            newIntent?.putExtra("isStopServer", false)
+//        if (newIntent?.getBooleanExtra("isStopServer", false) ?: false) {
+//            newIntent?.putExtra("isStopServer", false)
+//            stopServer()
+//            finish()
+//        }
+        dealIntent(newIntent)
+        mainModel.dealNewIntentData(newIntent)
+    }
+
+
+    private fun dealIntent(intent: Intent?){
+        if (intent?.getBooleanExtra("isStopServer", false) ?: false) {
+//            intent?.putExtra("isStopServer", false)
             stopServer()
             finish()
         }
-        mainModel.dealWithNewIntent(newIntent)
     }
 
     /**绑他妈的*/

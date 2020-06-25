@@ -37,7 +37,7 @@ class MainModel(val repo: MainRepo) : ViewModel() {
     val isRefreshClipboardUI = MutableLiveData<Boolean>()
 
     /**处理刚进页面时传入的Intent*/
-    fun dealWithNewIntent(intent: Intent?) = viewModelScope.launch {
+    fun dealNewIntentData(intent: Intent?) = viewModelScope.launch {
 //        if (isFinishing()) conti.resumeWithException(Exception(""))
         if (intent?.extras != null) isLoading.value = true
         try {
