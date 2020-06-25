@@ -12,8 +12,8 @@ android {
         applicationId "com.sibyl.HttpFileDominator"
         minSdkVersion 24 //日你妈，还不是为了适配8.0通知
         targetSdkVersion 28
-        versionCode 35
-        versionName "1.1.0"
+        versionCode 36
+        versionName "1.1.1"
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }
 

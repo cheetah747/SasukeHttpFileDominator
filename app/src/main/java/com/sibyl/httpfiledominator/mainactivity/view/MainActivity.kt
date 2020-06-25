@@ -54,8 +54,6 @@ open class MainActivity : BaseActivity() {
 
     val notiDominator by lazy { NotiDominator(this) }
 
-    var isShowModeChangeSnackbar = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
 //        window.setBackgroundDrawable(null)
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -144,14 +142,10 @@ open class MainActivity : BaseActivity() {
             isClipboardMode.observe(this@MainActivity, Observer {
                 MyHttpServer.changeUrisByMode(it)//切换主url
                 refreshClipModeVisibility(it)//切换组件显示状态
-                if (isShowModeChangeSnackbar){
-                    showSnackbar(fab, getString(if (it) R.string.clipboard_mode_on else R.string.clipboard_mode_off))
-                }
                 when(it){
                     true -> createClipDataRefresh(clipboardFile)//剪切板模式，创建剪切板内容缓存文件，并刷新UI
                     else -> if (MyHttpServer.getNormalUris().isEmpty()) stopServer()//如果 普通模式 && 并没有添加文件，就应该把服务关掉
                 }
-                isShowModeChangeSnackbar = true
             })
 
             //刷新剪切板UI显示
@@ -180,6 +174,7 @@ open class MainActivity : BaseActivity() {
 
         clipboardBtn.setOnClickListener {
             mainModel.isClipboardMode.value = !(mainModel.isClipboardMode.value ?: false)
+            showSnackbar(fab, getString(if (mainModel.isClipboardMode.value ?:false) R.string.clipboard_mode_on else R.string.clipboard_mode_off))
         }
 
         copyBtn.setOnClickListener {
@@ -286,7 +281,6 @@ open class MainActivity : BaseActivity() {
         //如果为true，那就再赋一次true，激发它的观察者，以刷新剪切板UI
         Handler().postDelayed( {
             if (mainModel.isClipboardMode.value ?: false){
-                isShowModeChangeSnackbar = false//先禁用它的观察者里的Snackbar的显示
                 mainModel.isClipboardMode.value = true
             }
         },300)
