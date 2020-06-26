@@ -29,6 +29,7 @@
         <activity android:name="com.sibyl.httpfiledominator.activities.TempActivity"/>
         <activity
             android:name="com.sibyl.httpfiledominator.mainactivity.view.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>
