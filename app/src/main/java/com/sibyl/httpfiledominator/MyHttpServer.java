@@ -244,7 +244,15 @@ public class MyHttpServer extends Thread {
         Collections.sort(arrayOfIps, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return o1.contains("//192")? -1 : 0;//把192的IP排在前面
+                int order = 0;
+                if (o1.contains("//192")){//把192的IP排在前面
+                    order = -3;
+                }else if (o1.contains("//172")){
+                    order = -2;
+                }else if (o1.contains("//10.")){
+                    order = -1;
+                }
+                return  order;
             }
         });
 
