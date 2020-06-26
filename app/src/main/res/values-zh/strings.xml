@@ -18,8 +18,8 @@
     <string name="disconnected_ip">客户端%s走了</string>
     <string name="connected_ip">客户端%s来了</string>
     <string name="files_clear_stop_server">文件已清空，服务停止</string>
-    <string name="clipboard_mode_on">【剪切板模式】开启</string>
-    <string name="clipboard_mode_off">【剪切板模式】关闭</string>
+    <string name="clipboard_mode_on">【剪切板分享模式】开启</string>
+    <string name="clipboard_mode_off">【剪切板分享模式】关闭</string>
     <string name="stop">停止</string>
     <string name="clipboard_title_text">剪切板</string>
 

@@ -62,17 +62,6 @@
         <!--        android:src="@drawable/ic_share" />-->
 
         <ImageButton
-            android:id="@+id/clipboardBtn"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:backgroundTint="@color/transparent"
-            android:contentDescription="剪切板"
-            android:padding="5dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_clipboard_off" />
-
-
-        <ImageButton
             android:id="@+id/copyBtn"
             android:layout_width="45dp"
             android:layout_height="45dp"
@@ -91,6 +80,16 @@
             android:padding="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_qrcode" />
+
+        <ImageButton
+            android:id="@+id/clipboardBtn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/transparent"
+            android:contentDescription="剪切板"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_clipboard_off" />
 
     </LinearLayout>
 </layout>

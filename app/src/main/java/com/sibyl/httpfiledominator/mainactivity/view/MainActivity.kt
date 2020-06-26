@@ -151,6 +151,7 @@ open class MainActivity : BaseActivity() {
 
             //模式切换时（剪切板 or 普通模式）
             isClipboardMode.observe(this@MainActivity, Observer {
+                copyBtn.visibility = if (it) View.GONE else View.VISIBLE
                 MyHttpServer.changeUrisByMode(it)//切换主url
                 refreshClipModeVisibility(it)//切换组件显示状态
                 when(it){
