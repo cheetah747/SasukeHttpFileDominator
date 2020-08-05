@@ -20,6 +20,9 @@ import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.XXPermissions
 import com.sibyl.httpfiledominator.LoadWaitDominator
@@ -27,6 +30,7 @@ import com.sibyl.httpfiledominator.MyHttpServer
 import com.sibyl.httpfiledominator.R
 import com.sibyl.httpfiledominator.UriInterpretation
 import com.sibyl.httpfiledominator.activities.BaseActivity
+import com.sibyl.httpfiledominator.barcodescanneract.LiveBarcodeScanningActivity
 import com.sibyl.httpfiledominator.databinding.ActivityMainBinding
 import com.sibyl.httpfiledominator.mainactivity.model.MainModel
 import com.sibyl.httpfiledominator.mainactivity.repo.MainModelFactory
@@ -53,6 +57,7 @@ open class MainActivity : BaseActivity() {
     protected var loadWait: LoadWaitDominator? = null
 
     val notiDominator by lazy { NotiDominator(this) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 //        window.setBackgroundDrawable(null)
@@ -177,6 +182,10 @@ open class MainActivity : BaseActivity() {
     /**挂监听器*/
     fun setListeners() {
         fab.setOnClickListener {
+            if (mainModel.isClipboardMode.value == true){
+                startActivity(Intent(this,LiveBarcodeScanningActivity::class.java))
+                return@setOnClickListener
+            }
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -216,12 +225,14 @@ open class MainActivity : BaseActivity() {
             clipboardBtn.setImageResource(if (isClipboardMode) R.drawable.ic_clipboard_on else R.drawable.ic_clipboard_off)
             clipboardContainer.visibility = if (isClipboardMode) View.VISIBLE else View.GONE
             fileNameContainer.visibility = if (isClipboardMode) View.GONE else View.VISIBLE
-            if (isClipboardMode) {
-                fab.hide()
-                notiDominator.showNotifi()//剪切板模式必开通知，管你剪切板里有没有内容
-            } else {
-                fab.show()
-            }
+            fab.setImageResource(if (isClipboardMode) R.drawable.camera else R.drawable.ic_add)
+            if (isClipboardMode) notiDominator.showNotifi()//剪切板模式必开通知，管你剪切板里有没有内容
+//            if (isClipboardMode) {
+//                fab.hide()
+//                notiDominator.showNotifi()//剪切板模式必开通知，管你剪切板里有没有内容
+//            } else {
+//                fab.show()
+//            }
         }
     }
 
@@ -309,7 +320,7 @@ open class MainActivity : BaseActivity() {
                     //                    .permission(Permission.Group.STORAGE, Permission.Group.CALENDAR) //不指定权限则自动获取清单中的危险权限
                     .permission( //存储
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE //                    //电话
+                            Manifest.permission.READ_EXTERNAL_STORAGE, //                    //电话
                             //                    Manifest.permission.CALL_PHONE,
                             //                            Manifest.permission.READ_PHONE_STATE
                             //                    //短信
@@ -322,9 +333,9 @@ open class MainActivity : BaseActivity() {
                             //                    Manifest.permission.ACCESS_COARSE_LOCATION,
                             //                    Manifest.permission.ACCESS_FINE_LOCATION,
                             //                    //相机
-                            //                    Manifest.permission.CAMERA
-                            //                                Manifest.permission.CHANGE_NETWORK_STATE,
-                            //                                Manifest.permission.WRITE_SETTINGS
+                            Manifest.permission.CAMERA
+//                            Manifest.permission.CHANGE_NETWORK_STATE,
+//                            Manifest.permission.WRITE_SETTINGS
                             //安装APK
                             /*Manifest.permission.REQUEST_INSTALL_PACKAGES*/
                     ).request(object : OnPermission {

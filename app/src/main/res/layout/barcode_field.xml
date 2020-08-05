@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/barcode_field_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:background="@color/white">
+
+  <TextView
+      android:id="@+id/barcode_field_value"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      android:padding="16dp"
+      android:background="@drawable/barcode_field_box"
+      android:textColor="#797979"
+      android:textSize="16sp"/>
+
+  <TextView
+      android:id="@+id/barcode_field_label"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:padding="4dp"
+      android:background="@color/white"
+      android:textColor="@color/black"
+      android:textSize="12sp"/>
+
+</FrameLayout>
