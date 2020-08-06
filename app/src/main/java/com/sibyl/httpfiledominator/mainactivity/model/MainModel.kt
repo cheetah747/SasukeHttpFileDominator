@@ -1,8 +1,9 @@
 package com.sibyl.httpfiledominator.mainactivity.model
 
 import android.content.Intent
-import android.os.Handler
+import android.content.res.AssetManager
 import android.os.Looper
+import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.sibyl.httpfiledominator.MyHttpServer
 import com.sibyl.httpfiledominator.UriInterpretation
 import com.sibyl.httpfiledominator.mainactivity.repo.MainRepo
+import com.sibyl.httpfiledominator.utils.ClipServer
 import kotlinx.coroutines.launch
-import java.io.File
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.lang.StringBuilder
 
 /**
  * @author HUANGSHI-PC on 2020-03-06 0006.
@@ -22,6 +26,9 @@ class MainModel(val repo: MainRepo) : ViewModel() {
     val snackbarMsg = MutableLiveData<String>().apply { value = "" }
 
     val httpServer = MutableLiveData<MyHttpServer?>()
+
+    val clipServer = MutableLiveData<ClipServer?>()
+
     /**默认显示的IP地址*/
     val preferredServerUrl = ObservableField<String>()
     /**服务器IP地址集*/
@@ -35,6 +42,9 @@ class MainModel(val repo: MainRepo) : ViewModel() {
 
     /**刷新剪切板UI*/
     val isRefreshClipboardUI = MutableLiveData<Boolean>()
+
+    /**html文件内容*/
+    var indexHTML = MutableLiveData<String>()
 
     /**处理刚进页面时传入的Intent*/
     fun dealNewIntentData(intent: Intent?) = viewModelScope.launch {
@@ -65,6 +75,25 @@ class MainModel(val repo: MainRepo) : ViewModel() {
         }
     }
 
+    fun startClipServer(assets: AssetManager) = viewModelScope.launch {
+        if (indexHTML.value == null){
+            indexHTML.value = repo.getIndexHTML(assets)
+        }
+        if (clipServer.value == null){
+            clipServer.value = ClipServer(1120, indexHTML.value){
+                //浏览器端修改了数据之后的回调
+                createClipDataRefresh(it)
+            }
+        }
+        clipServer.value?.startIfNotInUse()
+    }
+
+    fun startFileServer(){
+        if (httpServer.value == null){
+            httpServer.value = MyHttpServer(1120)
+        }
+    }
+
 
     /**对新uri的处理*/
     fun dealWithNewUris(newUriList: MutableList<UriInterpretation>?) = viewModelScope.launch {
@@ -83,16 +112,19 @@ class MainModel(val repo: MainRepo) : ViewModel() {
         isClipboardMode.value = false
     }
 
+
     /**
      * 处理剪切板情况下的数据
      */
-    fun createClipDataRefresh(clipboardFile: File) = viewModelScope.launch {
+    fun createClipDataRefresh(newText: String = ""/*clipboardFile: File*/) = viewModelScope.launch {
         isLoading.value = true
         try{
-            repo.writeClipboard2File(clipboardFile)
-            if (httpServer.value == null){
-                httpServer.value = MyHttpServer(1120)
+            if (newText == ""){
+                repo.getTxtFromClipboard(/*clipboardFile*/)
+            }else{
+                repo.write2Clipboard(newText)
             }
+//            startFileServer()
             isRefreshClipboardUI.value = true
         }catch (e: Exception){
             snackbarMsg.value = e.message

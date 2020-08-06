@@ -1,16 +1,23 @@
 package com.sibyl.httpfiledominator.mainactivity.repo
 
 import android.content.Intent
+import android.content.res.AssetManager
 import android.net.Uri
+import android.os.Looper
 import android.os.Parcelable
+import android.util.Log
 import com.sibyl.httpfiledominator.MyApp
 import com.sibyl.httpfiledominator.MyHttpServer
 import com.sibyl.httpfiledominator.UriInterpretation
+import com.sibyl.httpfiledominator.utils.ClipServer
 import com.sibyl.httpfiledominator.utils.ClipboardUtil
 import com.sibyl.httpfiledominator.utils.JsonDominator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
+import java.lang.StringBuilder
 import java.util.*
 
 /**
@@ -68,12 +75,43 @@ class MainRepo {
 
 
     /**剪切板模式下的数据处理*/
-    suspend fun writeClipboard2File(clipboardFile: File) = withContext(Dispatchers.IO) {
+    //如果用html的话，这里传入的File其实是没作用的
+    suspend fun getTxtFromClipboard(/*clipboardFile: File*/) = withContext(Dispatchers.IO) {
         //剪切板内容写入到文件
-        JsonDominator.fire2Dir(ClipboardUtil.getText(MyApp.instance), clipboardFile)
+//        JsonDominator.fire2Dir(ClipboardUtil.getText(MyApp.instance), clipboardFile)
+        ClipServer.text = ClipboardUtil.getText(MyApp.instance)
+        ClipServer.textRaw= Base64.getEncoder().encodeToString(ClipboardUtil.getText(MyApp.instance).toByteArray())
+
         val tempUris = ArrayList<UriInterpretation>().apply {
-            add(UriInterpretation(Uri.fromFile(clipboardFile), ClipboardUtil.getText(MyApp.instance), MyApp.instance?.getContentResolver()))
+            add(UriInterpretation(Uri.EMPTY, ClipServer.text, MyApp.instance?.getContentResolver()))
+                    /*UriInterpretation(Uri.fromFile(clipboardFile), ClipboardUtil.getText(MyApp.instance)*/
         }
         MyHttpServer.setClipboardUris(tempUris)
+    }
+
+    /**写入到剪切板*/
+    suspend fun write2Clipboard(newText: String) = withContext(Dispatchers.IO) {
+        ClipboardUtil.copyText(MyApp.instance,newText)
+
+        val tempUris = ArrayList<UriInterpretation>().apply {
+            add(UriInterpretation(Uri.EMPTY, newText, MyApp.instance?.getContentResolver()))
+        }
+        MyHttpServer.setClipboardUris(tempUris)
+    }
+
+
+    /**获取index.html*/
+    suspend fun getIndexHTML(assets: AssetManager): String = withContext(Dispatchers.IO) {
+        val sb = StringBuilder()
+        val bReader = BufferedReader(InputStreamReader(assets.open("index.html")))
+        while (true){
+            val str = bReader.readLine()
+            if (str == null){
+                break
+            }
+            sb.append(str +"\n")
+        }
+        bReader.close()
+        sb.toString()
     }
 }

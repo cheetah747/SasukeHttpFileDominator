@@ -151,12 +151,14 @@ open class MainActivity : BaseActivity() {
 
             //模式切换时（剪切板 or 普通模式）
             isClipboardMode.observe(this@MainActivity, Observer {
-                copyBtn.visibility = if (it) View.GONE else View.VISIBLE
-                MyHttpServer.changeUrisByMode(it)//切换主url
                 refreshClipModeVisibility(it)//切换组件显示状态
+//                MyHttpServer.changeUrisByMode(it)//切换主url
                 when(it){
-                    true -> createClipDataRefresh(clipboardFile)//剪切板模式，创建剪切板内容缓存文件，并刷新UI
-                    else -> if (MyHttpServer.getNormalUris().isEmpty()) stopServer()//如果 普通模式 && 并没有添加文件，就应该把服务关掉
+                    true -> {
+                        switch2ClipServer()
+                        createClipDataRefresh()
+                    }/*createClipDataRefresh(clipboardFile)*///剪切板模式，创建剪切板内容缓存文件，并刷新UI
+                    else -> {switch2FileServer()/*if (MyHttpServer.getNormalUris().isEmpty()) stopServer() else*/ }//如果 普通模式 && 并没有添加文件，就应该把服务关掉
                 }
             })
 
@@ -213,6 +215,7 @@ open class MainActivity : BaseActivity() {
     /**根据模式的不同，切换不同的组件显示状态*/
     fun refreshClipModeVisibility(isClipboardMode: Boolean) {
         runOnUiThread {
+            copyBtn.visibility = if (isClipboardMode) View.GONE else View.VISIBLE
             clipboardBtn.setImageResource(if (isClipboardMode) R.drawable.ic_clipboard_on else R.drawable.ic_clipboard_off)
             clipboardContainer.visibility = if (isClipboardMode) View.VISIBLE else View.GONE
             fileNameContainer.visibility = if (isClipboardMode) View.GONE else View.VISIBLE
@@ -273,15 +276,52 @@ open class MainActivity : BaseActivity() {
 
     private fun stopServer() {
         notiDominator.dismissAll(this)//隐藏通知
-        mainModel.httpServer.run {
-            value?.stopServer()
-            value = null
+        mainModel.run {
+            httpServer.value?.stopServer()
+            httpServer.value = null
+            clipServer.value?.stop()
+            clipServer.value = null
         }
         MyHttpServer.clearFiles()
         //UI
         if (isFinishing) return
         mainModel.preferredServerUrl.set("")//IP栏不应该再显示IP
     }
+
+
+
+
+    /**当切换成【剪切板】模式时，需要暂停而不是终止*/
+    private fun switch2ClipServer() {
+        mainModel.run {
+            httpServer.value?.stopServer()
+            httpServer.value = null
+
+            startClipServer(assets)
+            preferredServerUrl.set("http://${ClipServer.getIpAddress()}:1120")
+            notiDominator.showNotifi()
+        }
+    }
+
+    /**当换成【文件服务器】模式时*/
+    private fun switch2FileServer() {
+        //关剪切板
+        mainModel.run {
+            clipServer.value?.stop()
+            clipServer.value = null
+
+            startFileServer()
+            preferredServerUrl.set("http://${ClipServer.getIpAddress()}:1120")
+        }
+        //如果恢复回来的时候没文件，那就取消通知、地址栏关掉
+        if (MyHttpServer.getNormalUris().isEmpty()){
+            notiDominator.dismissAll(this)
+            mainModel.preferredServerUrl.set("")
+        }
+    }
+
+
+
 
     override fun onDestroy() {
         stopServer()
