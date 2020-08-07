@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HTTPサーバー</string>
+    <string name="app_name">HTTPドミネーター</string>
     <string name="alert_dialog_cancel">キャンセル</string>
     <string name="alert_dialog_ok">確認</string>
     <string name="button_qrcode">QRコード</string>

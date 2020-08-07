@@ -105,9 +105,12 @@ class MainRepo {
         val sb = StringBuilder()
         val bReader = BufferedReader(InputStreamReader(assets.open("index.html")))
         while (true){
-            val str = bReader.readLine()
+            var str = bReader.readLine()
             if (str == null){
                 break
+            }
+            if (str.contains("></textarea>")){//加速首次打开时的文字显示速度
+                str = str.replace("></textarea>",">${ClipboardUtil.getText(MyApp.instance)}</textarea>")
             }
             sb.append(str +"\n")
         }

@@ -9,7 +9,7 @@ android {
     buildToolsVersion "28.0.3"
 
     defaultConfig {
-        applicationId "com.sibyl.HttpFileDominator"
+        applicationId "com.sibyl.httpfiledominator"
         minSdkVersion 26 //日你妈，还不是为了适配8.0通知
         targetSdkVersion 28
         versionCode 38

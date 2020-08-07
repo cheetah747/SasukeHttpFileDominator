@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+            android:enabled="true"
+            android:icon="@drawable/clipboard_shotcut"
+            android:shortcutDisabledMessage="@string/clipboard_title_text"
+            android:shortcutId="clipboard"
+            android:shortcutLongLabel="@string/clipboard_title_text"
+            android:shortcutShortLabel="@string/clipboard_title_text">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.sibyl.httpfiledominator.activities.ClipboardJumpActivity"
+                android:targetPackage="com.sibyl.httpfiledominator" />
+        <!--<categories android:name="android.shortcut.conversation" />-->
+    </shortcut>
+
+
+    <!--<shortcut-->
+            <!--android:enabled="true"-->
+            <!--android:icon="@mipmap/change_file_shotcut"-->
+            <!--android:shortcutDisabledMessage="@string/unavailable"-->
+            <!--android:shortcutId="changefilename"-->
+            <!--android:shortcutLongLabel="@string/change_file_name"-->
+            <!--android:shortcutShortLabel="@string/change_file_name">-->
+        <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:targetClass="com.sibyl.sasukehomeDominator.shortcutactivity.ChangeFileNameAct"-->
+                <!--android:targetPackage="com.sibyl.sasukehomeDominator" />-->
+        <!--&lt;!&ndash;<categories android:name="android.shortcut.conversation" />&ndash;&gt;-->
+    <!--</shortcut>-->
+</shortcuts>

@@ -2,23 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sibyl.httpfiledominator">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<!--    申请让用户为应用开启非省电模式-->
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-
-    <!--    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
-
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.faketouch"
-        android:required="false" />
-
-<!--    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />-->
-
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -26,12 +9,18 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.sibyl.httpfiledominator.activities.TempActivity"/>
+        <activity
+            android:name="com.sibyl.httpfiledominator.activities.TempActivity"
+            android:theme="@style/BridgeAct" />
+        <activity
+            android:name="com.sibyl.httpfiledominator.activities.ClipboardJumpActivity"
+            android:theme="@style/BridgeAct" />
+
         <activity
             android:name="com.sibyl.httpfiledominator.mainactivity.view.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTask"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -46,23 +35,44 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
-<!--        <activity-->
-<!--            android:name="com.sibyl.HttpFileDominator.activities.SendFileActivity"-->
-<!--            android:label="@string/app_name"-->
-<!--            android:excludeFromRecents="true">-->
-<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
-<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
-<!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND_MULTIPLE" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
-<!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
-<!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
-<!--        </activity>-->
+        <!--        <activity-->
+        <!--            android:name="com.sibyl.HttpFileDominator.activities.SendFileActivity"-->
+        <!--            android:label="@string/app_name"-->
+        <!--            android:excludeFromRecents="true">-->
+        <!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <action android:name="android.intent.action.SEND_MULTIPLE" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <category android:name="android.intent.category.DEFAULT" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <data android:mimeType="*/*" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--        </activity>-->
     </application>
+    <uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <!--    申请让用户为应用开启非省电模式-->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!--    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!--    <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />-->
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

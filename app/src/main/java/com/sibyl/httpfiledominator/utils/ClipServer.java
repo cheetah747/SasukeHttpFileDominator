@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -42,9 +43,11 @@ public class ClipServer extends NanoHTTPD {
         if (session.getMethod() == Method.GET) {
             return newFixedLengthResponse(html);
         }
-        Map<String, String> map = session.getParms();
-        if (map.get("isUpdate") == null || !((String) map.get("isUpdate")).equals("YES")) {
-            textRaw = (String) map.get("value");
+//        Map<String, String> map = session.getParms();
+        Map<String, List<String>> map = session.getParameters();
+
+        if (map.get("isUpdate").get(0) == null || !((String) map.get("isUpdate").get(0)).equals("YES")) {
+            textRaw = (String) map.get("value").get(0);
             String decodeText = new String(Base64.getDecoder().decode(textRaw), StandardCharsets.UTF_8);
             if (textRaw != null) {
                 text = decodeText;
@@ -85,4 +88,5 @@ public class ClipServer extends NanoHTTPD {
         }
         return "";
     }
+
 }

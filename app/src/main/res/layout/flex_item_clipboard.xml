@@ -14,13 +14,15 @@
     app:cardElevation="3dp">
 
     <LinearLayout
+        android:minWidth="150dp"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <!--剪切板标题栏-->
         <LinearLayout
+            android:gravity="center"
             android:id="@+id/clipboardTitleLayout"
             android:background="@color/clipboard_card_title_color"
             android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">HTTP文件服务器</string>
+    <string name="app_name">HTTP文件支配者</string>
     <string name="alert_dialog_cancel">取消</string>
     <string name="alert_dialog_ok">确定</string>
     <string name="button_qrcode">二维码</string>
@@ -22,5 +22,6 @@
     <string name="clipboard_mode_off">【剪切板分享模式】关闭</string>
     <string name="stop">停止</string>
     <string name="clipboard_title_text">剪切板</string>
+
 
 </resources>

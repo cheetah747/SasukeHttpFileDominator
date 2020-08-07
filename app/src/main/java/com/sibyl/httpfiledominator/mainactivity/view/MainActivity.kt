@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -83,11 +84,16 @@ open class MainActivity : BaseActivity() {
 
 
     private fun dealIntent(intent: Intent?){
-        if (intent?.getBooleanExtra("isStopServer", false) ?: false) {
+        if (intent?.getBooleanExtra("isStopServer", false) == true) {
 //            intent?.putExtra("isStopServer", false)
             stopServer()
             finish()
         }
+        if (intent?.getBooleanExtra("isClipboardMode", false) == true) {
+//            intent?.putExtra("isStopServer", false)
+            mainModel.isClipboardMode.value = true
+        }
+
     }
 
     /**绑他妈的*/
@@ -168,7 +174,7 @@ open class MainActivity : BaseActivity() {
                                                 else LayoutInflater.from(this@MainActivity).inflate(R.layout.flex_item_clipboard, clipboardContainer, false)
                 val uriInterpretation = MyHttpServer.getClipboardUris().get(0)
                 val showText = if (uriInterpretation.clipboardText.isEmpty()) "（剪切板为空）" else uriInterpretation.clipboardText
-                (view.findViewById<View>(R.id.itemNameTv) as TextView).text = showText
+                (view.findViewById<View>(R.id.itemNameTv) as TextView).apply { text = showText;requestLayout() }
                 if (clipboardContainer.childCount == 0){
                     clipboardContainer.addView(view)
                 }
