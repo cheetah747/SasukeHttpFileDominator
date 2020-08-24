@@ -274,6 +274,7 @@ public class MyHttpServer extends Thread {
         return true;
     }
 
+    @Override
     public void run() {
         s("Starting " + Util.myLogName + " server v" + BuildConfig.VERSION_NAME);
         if (!normalBind(port)) {
