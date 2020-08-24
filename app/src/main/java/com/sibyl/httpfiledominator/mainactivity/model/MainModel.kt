@@ -100,13 +100,13 @@ class MainModel(val repo: MainRepo) : ViewModel() {
         //先过滤一波已经添加过的
         newUriList?.removeAll(MyHttpServer.getNormalUris())
         if (newUriList.isNullOrEmpty()) return@launch
-        //切换模式
-        isClipboardMode.value = false
         //如果没有建立起http服务时==========
         if (httpServer.value == null){
             httpServer.value = MyHttpServer(1120)
         }
         MyHttpServer.getNormalUris().addAll(newUriList)
+        //切换模式
+        isClipboardMode.value = false
         //显示到UI
         newUrisCache.value = newUriList
         MyHttpServer.changeUrisByMode(false)
