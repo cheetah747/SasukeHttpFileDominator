@@ -332,6 +332,7 @@ open class MainActivity : BaseActivity() {
     override fun onDestroy() {
         stopServer()
         super.onDestroy()
+        System.exit(0)
     }
 
     override fun onResume() {

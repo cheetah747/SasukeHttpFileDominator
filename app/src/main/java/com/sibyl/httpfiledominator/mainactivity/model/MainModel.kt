@@ -56,7 +56,9 @@ class MainModel(val repo: MainRepo) : ViewModel() {
                 dealWithNewUris(sharedUriList)
             }
         } catch (e: Exception) {
-            snackbarMsg.value = e.message
+            if ( intent?.extras?.getBoolean("isClipboardMode") != true) {//如果不是跳到剪切板模式，才执行文件uri处理
+                snackbarMsg.value = e.message
+            }
         }finally {
             isLoading.value = false
         }
