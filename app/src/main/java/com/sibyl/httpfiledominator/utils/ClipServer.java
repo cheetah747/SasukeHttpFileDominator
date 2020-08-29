@@ -38,6 +38,7 @@ public class ClipServer extends NanoHTTPD {
 //        ServerRunner0.run(ClipServer.class);
 //    }
 
+    @Override
     public Response serve(IHTTPSession session) {
         super.serve(session);
         if (session.getMethod() == Method.GET) {
@@ -65,7 +66,7 @@ public class ClipServer extends NanoHTTPD {
 
     public void  startIfNotInUse(){
         try {
-            this.start();
+            this.start(2000,true);
         } catch (IOException e) {
             e.printStackTrace();
         }
