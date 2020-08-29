@@ -66,7 +66,8 @@ public class ClipServer extends NanoHTTPD {
 
     public void  startIfNotInUse(){
         try {
-            this.start(2000,true);
+//            this.start(2000,true);
+            this.start(2000);
         } catch (IOException e) {
             e.printStackTrace();
         }
