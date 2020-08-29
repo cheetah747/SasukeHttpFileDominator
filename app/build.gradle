@@ -13,7 +13,7 @@ android {
         minSdkVersion 26 //日你妈，还不是为了适配8.0通知
         targetSdkVersion 28
         versionCode 38
-        versionName "1.3.5"
+        versionName "1.3.6"
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }
 
