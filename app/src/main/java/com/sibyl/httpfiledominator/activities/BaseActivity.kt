@@ -20,11 +20,11 @@ open class BaseActivity: AppCompatActivity() {
     }
 
     fun initUIAfter(toolbar: Toolbar){
-        window.navigationBarColor = resources.getColor(R.color.main_activity_background_color, null)
+//        window.navigationBarColor = resources.getColor(R.color.main_activity_background_color, null)
         //设置ActionBar
         setSupportActionBar(toolbar.apply {
             setTitle(getString(R.string.app_name))
-            setTitleTextColor(getResources().getColor(R.color.light_blue, null))
+            setTitleTextColor(getResources().getColor(R.color.white, null))
         })
     }
 }
