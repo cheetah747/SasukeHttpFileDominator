@@ -55,14 +55,15 @@ public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
     private void animateOut(final FloatingActionButton button) {
         ViewCompat.animate(button).translationY(button.getHeight() + getMarginBottom(button)).setInterpolator(INTERPOLATOR).withLayer()
                 .setListener(new ViewPropertyAnimatorListener() {
+                    @Override
                     public void onAnimationStart(View view) {
                         ScrollAwareFABBehavior.this.mIsAnimatingOut = true;
                     }
-
+                    @Override
                     public void onAnimationCancel(View view) {
                         ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
                     }
-
+                    @Override
                     public void onAnimationEnd(View view) {
                         ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
                         view.setVisibility(View.INVISIBLE);
