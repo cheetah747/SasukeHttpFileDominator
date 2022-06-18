@@ -38,8 +38,8 @@ class MainRepo {
                 return@withContext theUris
             }
             val extras = dataIntent.extras
-            if (extras == null) {//直接手动进的主页，不会存在传intent数据的情况
-                throw Exception()
+            if (extras == null || extras[Intent.EXTRA_STREAM] == null) {//直接手动进的主页，不会存在传intent数据的情况
+                return@withContext theUris
             }
             var myUri: Uri? = extras[Intent.EXTRA_STREAM] as Uri
             if (myUri == null) {

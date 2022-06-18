@@ -53,7 +53,9 @@ class MainModel(val repo: MainRepo) : ViewModel() {
         try {
             intent?.extras?.let {
                 val sharedUriList = repo.getIntentFileUris(intent)
-                dealWithNewUris(sharedUriList)
+                if (!sharedUriList.isNullOrEmpty()){
+                    dealWithNewUris(sharedUriList)
+                }
             }
         } catch (e: Exception) {
             if ( intent?.extras?.getBoolean("isClipboardMode") != true) {//如果不是跳到剪切板模式，才执行文件uri处理
