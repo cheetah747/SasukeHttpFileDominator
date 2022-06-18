@@ -392,4 +392,9 @@ open class MainActivity : BaseActivity() {
                     })
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 }
